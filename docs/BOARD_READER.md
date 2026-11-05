@@ -1,7 +1,6 @@
 # A supervised local board reader
 
-These helpers are new in 0.2.0. Until that version is published, use this
-repository checkout; published 0.1.0 does not include them.
+These helpers require `{:t3, "~> 0.2.0"}`; version 0.1.0 does not include them.
 
 Use `T3.LocalAuth` and `T3.RPC.Reader` for a service that reads its own localhost
 T3 installation. No browser or OAuth approval is needed at service startup. The

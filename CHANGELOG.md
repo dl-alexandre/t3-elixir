@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 — unreleased
+## 0.2.0 — 2026-11-05
 
 - Add supervised RPC readers with reconnect, re-subscription, catch-up reads,
   bounded backoff, optional health checks and consumption-before-ACK callbacks.

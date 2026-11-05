@@ -1,7 +1,6 @@
 # Release readiness
 
-The SDK builds a local `t3-0.2.0.tar` archive for the next `t3` release on Hex.
-Version 0.1.0 is already published; 0.2.0 is not published yet.
+The SDK builds a local `t3-0.2.0.tar` archive for the `t3` release on Hex.
 The release owner is `dl-alexandre`. Guest sharing remains outside the validated
 0.1.0 release scope by the maintainer's decision.
 The CI workflow builds and tests only: it contains no publishing step, account
@@ -101,7 +100,7 @@ CI also passed for commit `197c5d3f1730a2a46855d0d22ea28b57b2aaed1c` in
 
 ## Before publishing a release
 
-1. The chosen Hex package and OTP application name are `t3`, next version `0.2.0`.
+1. The chosen Hex package and OTP application name are `t3`, version `0.2.0`.
    Recheck name availability before first publication; a lookup does not reserve it.
 2. The SDK repository is `https://github.com/dl-alexandre/t3-elixir`. Source and
    homepage links and GitHub maintainer identity are configured in `mix.exs`.
