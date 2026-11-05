@@ -53,9 +53,28 @@ text and PNG upload, byte-for-byte capability download, and pending attachment
 deletion. Media ticket issuance returned HTTP 200. Temporary native credentials
 were revoked after each run.
 
-Guest sharing was disabled and device discovery returned HTTP 503. Guest-share
-SSE and full browser/device media streams remain unverified. Other mutation
-workflows beyond pending attachment deletion remain unverified. See
+Browser media validation also passed using a disposable server tab: a scoped
+media ticket authenticated the raw WebSocket; JPEG frames were received and
+acknowledged; a file-picker multipart upload returned HTTP 204 and the page read
+the exact uploaded text; a browser download matched the expected bytes. The tab
+and its downloads were removed, and temporary credentials were revoked.
+
+The initial device discovery HTTP 503 was caused by the device hub not running.
+Refreshing through T3's device tool installed/started the required hub 0.19.1;
+the SDK device discovery endpoint then returned HTTP 200. No devices were
+available, so simulator/emulator media remains unverified. Guest sharing was
+disabled and T3 Connect authorization was missing, so guest-share SSE remains
+unverified. Other mutation workflows beyond pending attachment deletion remain
+unverified.
+
+The archive was extracted into a clean temporary directory, resolved fresh
+dependencies and compiled with `MIX_ENV=prod` and warnings as errors. Exile rebuilt
+its native code; all packaged catalogs loaded and the packaged CLI ran
+`t3 --version` successfully. Archive inspection found the required docs/notices
+and no build artifacts or credential-pattern matches.
+
+CI also passed for commit `197c5d3f1730a2a46855d0d22ea28b57b2aaed1c` in
+[the subsequent run](https://github.com/dl-alexandre/t3-elixir/actions/runs/42071214563). See
 [LIVE_TESTING.md](LIVE_TESTING.md) for exact variables and limits.
 
 ## Before the first publication

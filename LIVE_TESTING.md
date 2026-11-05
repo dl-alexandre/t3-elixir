@@ -58,8 +58,26 @@ block. They never attach files to a user thread or start an agent. Revoke any
 temporary environment credential after the run.
 
 On 2026-11-05 both tests passed against T3 Code 0.1.1. Media ticket issuance also
-returned HTTP 200. Device discovery returned HTTP 503; no device media stream was
-validated. `settings.guestSharingEnabled` was false, so guest redemption/SSE
+returned HTTP 200. Device discovery initially returned HTTP 503 because the hub
+was not running. After the T3 device-tool refresh started hub 0.19.1, SDK discovery
+returned HTTP 200; no devices were available for a device media stream. `settings.guestSharingEnabled` was false, so guest redemption/SSE
 remains unverified. Full guest tests need guest sharing enabled, a running T3
 Connect tunnel and a disposable shareable thread. Browser media tests need a
 disposable browser tab and file-picker/download fixtures.
+
+## Recorded browser media validation
+
+A disposable server browser tab was exercised on 2026-11-05 using a short-lived
+environment credential with `preview:operate` in addition to the native test
+scopes. A media ticket authenticated `T3.WebSocket.Routes.preview/4`. JPEG frames
+were checked for the JPEG signature and acknowledged with `preview_ack/2`.
+
+The fixture contained a file input and a Blob-backed download link. The SDK viewer
+sent `takeControl` on its interactive stream, received the `fileChooser` ID, and
+answered it through `T3.HTTP.Media.preview_upload/3` with multipart text bytes.
+HTTP 204 and the page's file contents confirmed the upload. The viewer then clicked
+the fixture link, received the `download` ID and fetched it using
+`T3.HTTP.Media.preview_download/2`; bytes matched exactly. File-chooser/download
+notifications go to the controlling viewer, so a view-only stream cannot supply
+these capability IDs. The tab and downloads were removed and the credential
+revoked. This was a manual live fixture, not an automatically enabled CI test.
