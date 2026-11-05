@@ -15,6 +15,7 @@ lists every operation, its source revision, authentication and coverage limits.
 - This README: installation and interface examples.
 - [Authentication](docs/AUTHENTICATION.md): MCP, native credentials, guest cookies and media tickets.
 - [Troubleshooting](docs/TROUBLESHOOTING.md): errors, scopes, lifecycle and stream ACKs.
+- [Supervised board reader](docs/BOARD_READER.md): reconnect, local service auth and normalized events (new in the unreleased 0.2.0 checkout).
 - [Interface inventory](INTERFACES.md): every pinned operation and compatibility limits.
 - [Live testing](LIVE_TESTING.md), [contributing](CONTRIBUTING.md) and [release checklist](RELEASE.md).
 

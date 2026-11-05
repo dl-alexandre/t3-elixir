@@ -1,10 +1,30 @@
 # Release readiness
 
-The SDK builds a local `t3-0.1.0.tar` archive for publication as `t3` on Hex.
+The SDK builds a local `t3-0.2.0.tar` archive for the next `t3` release on Hex.
+Version 0.1.0 is already published; 0.2.0 is not published yet.
 The release owner is `dl-alexandre`. Guest sharing remains outside the validated
 0.1.0 release scope by the maintainer's decision.
 The CI workflow builds and tests only: it contains no publishing step, account
 credentials, T3 tokens or live-environment configuration.
+
+## Board reader validation (0.2.0)
+
+The board additions passed 84 local tests with six opt-in live tests excluded.
+Focused fixture tests exercised reconnect/re-subscribe, fresh credential callback
+invocation, catch-up reads, consumption-before-ACK, ended streams, stalled health
+reads and shutdown. Board reducers covered project-only enrichment snapshots,
+host isolation and historical run/message updates. Formatting, compilation,
+ExDoc with warnings as errors and the local Hex archive build passed. The 0.2.0
+archive also compiled with fresh dependencies in an isolated production build;
+all three new APIs, both board guides and runtime catalogs were present.
+
+Live read-only probes against T3 Code 0.1.1 confirmed shell/thread snapshot
+payloads, local session caching, distinct RPC tickets and normalization of shell
+rows. A forced RPC disconnect recovered through `T3.RPC.Reader`, obtained a fresh
+ticket and received a new shell subscription snapshot. All temporary service
+sessions were revoked. Thread update-envelope examples are contract-derived;
+no live thread mutation was performed. See [the board guide](docs/BOARD_READER.md)
+and [recorded payloads](docs/BOARD_EVENTS.md).
 
 ## CI coverage
 
@@ -79,9 +99,9 @@ CI also passed for commit `197c5d3f1730a2a46855d0d22ea28b57b2aaed1c` in
 [the subsequent run](https://github.com/dl-alexandre/t3-elixir/actions/runs/42071214563). See
 [LIVE_TESTING.md](LIVE_TESTING.md) for exact variables and limits.
 
-## Before the first publication
+## Before publishing a release
 
-1. The chosen Hex package and OTP application name are `t3`, version `0.1.0`.
+1. The chosen Hex package and OTP application name are `t3`, next version `0.2.0`.
    Recheck name availability before first publication; a lookup does not reserve it.
 2. The SDK repository is `https://github.com/dl-alexandre/t3-elixir`. Source and
    homepage links and GitHub maintainer identity are configured in `mix.exs`.

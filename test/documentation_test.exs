@@ -8,6 +8,8 @@ defmodule T3.DocumentationTest do
     "RELEASE.md",
     "CONTRIBUTING.md",
     "docs/AUTHENTICATION.md",
+    "docs/BOARD_READER.md",
+    "docs/BOARD_EVENTS.md",
     "docs/TROUBLESHOOTING.md"
   ]
 

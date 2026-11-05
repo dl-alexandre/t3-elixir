@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 — unreleased
+
+- Add supervised RPC readers with reconnect, re-subscription, catch-up reads,
+  bounded backoff, optional health checks and consumption-before-ACK callbacks.
+- Add local service authentication with scoped CLI-issued session caching,
+  lazy renewal, revocation and fresh RPC tickets without browser sign-in.
+- Add host-aware board rows and reducers for live shell/thread stream payloads.
+- Document confirmed live stream shapes and complete board supervision/ACK examples.
+
 ## 0.1.0 — 2026-11-05
 
 - Add publication guides for authentication, troubleshooting and contributing.

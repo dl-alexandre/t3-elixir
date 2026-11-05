@@ -75,6 +75,60 @@ creates/signs proofs and handles nonces; the SDK does not manage signing keys.
 A proof for a bearer token is not reusable for a different ticket or request.
 Use the server's expected proof audience and hashed credential.
 
+## Local service accounts without interactive sign-in
+
+A board node talking only to its own localhost T3 can use `T3.LocalAuth`. This
+uses the installed CLI's native auth control plane under the service's OS user;
+it does not open a browser or need MCP OAuth. The service user must have access
+to the correct T3 data directory and executable. Use a dedicated OS account and
+explicit `base_dir` if your T3 installation does not use its default directory.
+The helper does not create an OS account or grant access to another user's T3.
+
+Start the credential provider before the reader in your supervision tree:
+
+```elixir
+children = [
+  {T3.LocalAuth,
+   name: MyApp.T3Auth,
+   base_url: "http://127.0.0.1:3773",
+   ttl: "24h",
+   scopes: ["orchestration:read"],
+   label: "board-reader"}
+]
+```
+
+Pass this function to a reconnecting reader; invoke it anew for each connection:
+
+```elixir
+connect = fn -> T3.LocalAuth.connection_options(MyApp.T3Auth) end
+{:ok, rpc_options} = connect.()
+{:ok, rpc} = T3.RPC.start_link(rpc_options)
+:ok = T3.RPC.close(rpc)
+```
+
+The provider caches one owned environment session, renews it when connection
+options are requested within 60 seconds of expiry, and revokes the prior session.
+It never mints a session for every reconnect while the existing session remains
+usable. Set `renew_before:` in milliseconds to adjust that window. Renewal is
+lazy at connection time, not a refresh of an already connected socket; a reader
+must reconnect after server expiry/revocation. Call `T3.LocalAuth.invalidate/1`
+when a cached session is revoked early, before requesting replacement options.
+A normal supervisor shutdown attempts to revoke owned sessions; forced OS kills
+can leave them until their TTL expires. A 24-hour TTL bounds that exposure while
+avoiding interactive service boots.
+
+Set `ticket: true` on the provider to use single-use RPC tickets. Each request for
+connection options obtains a fresh `"rpc"` ticket over local HTTP; the underlying
+environment token is still cached. Never reuse a ticket after a failed handshake.
+The provider only accepts loopback HTTP(S) origins, including IPv6 `[::1]`.
+Tokens stay in memory and are redacted in process status. Returned RPC options
+contain credentials and must not be logged or included in crash metadata.
+
+For one-off provisioning, `T3.LocalAuth.issue/1` returns an opaque credential;
+the caller owns its lifetime and must use `T3.LocalAuth.revoke/2` with the same
+CLI/data-directory options. For a service, the supervised provider is preferred.
+No runtime dependency on Python, a shell script or an OAuth callback is needed.
+
 ## Media and device streams
 
 Use a native environment credential with the required read/operate scopes or a

@@ -42,7 +42,8 @@ defmodule T3.RPC do
 
   `call/4` defaults to a 30-second deadline. Subscription `:timeout` defaults to
   `:infinity`; pass milliseconds for a total deadline. No operation is replayed or
-  retried after disconnect. Payloads and results retain the upstream string keys;
+  retried after disconnect. Use `T3.RPC.Reader` for opt-in supervised read
+  subscription recovery and `T3.LocalAuth` for local service credentials. Payloads and results retain the upstream string keys;
   `T3.RPC.Catalog` lists the pinned upstream methods and streaming flags.
   """
   use GenServer

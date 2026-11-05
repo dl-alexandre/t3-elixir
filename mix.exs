@@ -4,7 +4,7 @@ defmodule T3.MixProject do
   def project do
     [
       app: :t3,
-      version: "0.1.0",
+      version: "0.2.0",
       name: "T3",
       source_url: "https://github.com/dl-alexandre/t3-elixir",
       homepage_url: "https://github.com/dl-alexandre/t3-elixir",
@@ -19,6 +19,8 @@ defmodule T3.MixProject do
           "RELEASE.md",
           "CONTRIBUTING.md",
           "docs/AUTHENTICATION.md",
+          "docs/BOARD_READER.md",
+          "docs/BOARD_EVENTS.md",
           "docs/TROUBLESHOOTING.md"
         ]
       ],
@@ -32,7 +34,7 @@ defmodule T3.MixProject do
             "https://github.com/pingdotgg/t3code/blob/main/docs/user/outside-agents.md"
         },
         files:
-          ~w(lib priv examples mix.exs README.md INTERFACES.md LIVE_TESTING.md RELEASE.md CONTRIBUTING.md docs/AUTHENTICATION.md docs/TROUBLESHOOTING.md LICENSE CHANGELOG.md .formatter.exs)
+          ~w(lib priv examples mix.exs README.md INTERFACES.md LIVE_TESTING.md RELEASE.md CONTRIBUTING.md docs/AUTHENTICATION.md docs/BOARD_READER.md docs/BOARD_EVENTS.md docs/TROUBLESHOOTING.md LICENSE CHANGELOG.md .formatter.exs)
       ],
       start_permanent: Mix.env() == :prod,
       elixirc_paths: if(Mix.env() == :test, do: ["lib", "test/support"], else: ["lib"]),
