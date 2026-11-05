@@ -8,10 +8,11 @@ files are not shipped inside the Hex library archive. Enable them explicitly:
 mix test test/live --include live --warnings-as-errors
 ```
 
-Tests with missing environment variables are skipped. The harness only performs
+Tests with missing environment variables are skipped. The default harness performs
 read operations: environment metadata, MCP project/thread discovery, HTTP shell
 snapshot and RPC server configuration. It does not launch threads, change settings,
-upload attachments, redeem guest shares or control devices.
+redeem guest shares or control devices. Disposable attachment tests require a
+separate explicit opt-in, described below.
 
 | Test | Required environment variables |
 |---|---|
@@ -40,3 +41,25 @@ A passing fixture suite is not a substitute for these tests against each support
 T3 version. Record the T3 version, upstream contract revision, OS and Elixir/OTP
 combination when preparing a release. Media, guest and mutation workflows need a
 separate disposable environment and explicit test fixtures before enabling them.
+
+## Disposable attachment checks
+
+Set `T3_LIVE_DISPOSABLE_UPLOADS=1` along with the HTTP/RPC URLs and an environment
+credential permitting `orchestration:read`, `orchestration:operate` and
+`filesystem:read`, then run:
+
+```sh
+mix test test/live/attachments_test.exs --include live --warnings-as-errors
+```
+
+These two tests upload a tiny text file and PNG, download each through an asset
+capability, compare exact bytes, and delete the pending attachment in an `after`
+block. They never attach files to a user thread or start an agent. Revoke any
+temporary environment credential after the run.
+
+On 2026-11-05 both tests passed against T3 Code 0.1.1. Media ticket issuance also
+returned HTTP 200. Device discovery returned HTTP 503; no device media stream was
+validated. `settings.guestSharingEnabled` was false, so guest redemption/SSE
+remains unverified. Full guest tests need guest sharing enabled, a running T3
+Connect tunnel and a disposable shareable thread. Browser media tests need a
+disposable browser tab and file-picker/download fixtures.

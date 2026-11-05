@@ -48,8 +48,14 @@ and thread reads. The native checks ran together (three passed, MCP skipped);
 the OAuth MCP check ran separately after read-only approval (one passed, three
 skipped). The temporary native credential was revoked after validation.
 
-These checks validate read-only integration. Live upload/download, guest-share
-SSE, mutation and media workflows remain unverified. See
+Two additional disposable attachment tests passed against the same server:
+text and PNG upload, byte-for-byte capability download, and pending attachment
+deletion. Media ticket issuance returned HTTP 200. Temporary native credentials
+were revoked after each run.
+
+Guest sharing was disabled and device discovery returned HTTP 503. Guest-share
+SSE and full browser/device media streams remain unverified. Other mutation
+workflows beyond pending attachment deletion remain unverified. See
 [LIVE_TESTING.md](LIVE_TESTING.md) for exact variables and limits.
 
 ## Before the first publication
