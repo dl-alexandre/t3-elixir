@@ -1,0 +1,70 @@
+{
+  "source": "installed CLI --help",
+  "version": "t3 v0.1.1",
+  "commands": [
+    {
+      "name": "help",
+      "description": "Show command help."
+    },
+    {
+      "name": "start",
+      "description": "Run the T3 Code server."
+    },
+    {
+      "name": "serve",
+      "description": "Run the T3 Code server without opening a browser and print headless pairing details."
+    },
+    {
+      "name": "app",
+      "description": "Open a project in the running T3 Code desktop app."
+    },
+    {
+      "name": "pair",
+      "description": "Mint a pairing token for a running T3 Code server and print it as a QR code."
+    },
+    {
+      "name": "auth",
+      "description": "Manage the local auth control plane for headless deployments."
+    },
+    {
+      "name": "browser",
+      "description": "Manage T3's headless browser on this host."
+    },
+    {
+      "name": "project",
+      "description": "Manage projects."
+    },
+    {
+      "name": "service",
+      "description": "Manage the T3 Code background service."
+    },
+    {
+      "name": "update",
+      "description": "Download a newer t3 and switch this machine to it, including the background service when one is installed."
+    },
+    {
+      "name": "uninstall",
+      "description": "Remove t3 from this machine: the background service, the launcher, and every downloaded version. Your projects and threads are kept."
+    },
+    {
+      "name": "theme",
+      "description": "Inspect and set environment-wide theme defaults."
+    },
+    {
+      "name": "trace",
+      "description": "Inspect the local server trace file."
+    },
+    {
+      "name": "doctor",
+      "description": "Inspect this T3 Code data directory and repair it. Pauses and restarts the background service as needed."
+    },
+    {
+      "name": "triage",
+      "description": "Investigate a T3 Code problem on this machine with claude or codex, and help file a good issue."
+    },
+    {
+      "name": "connect",
+      "description": "Set up T3 Connect for this machine."
+    }
+  ]
+}

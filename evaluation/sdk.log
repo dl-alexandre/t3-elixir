@@ -1,0 +1,48 @@
+json connect: {:ok,
+ %{
+   instructions: nil,
+   protocol_version: "2025-06-18",
+   server_info: %MCP.Protocol.Types.Implementation{
+     name: "T3 fixture",
+     version: "1.0",
+     title: nil,
+     description: nil,
+     website_url: nil,
+     icons: nil
+   },
+   server_capabilities: %MCP.Protocol.Capabilities.ServerCapabilities{
+     tools: %MCP.Protocol.Capabilities.ToolCapabilities{list_changed: false},
+     resources: nil,
+     prompts: nil,
+     logging: nil,
+     completions: nil,
+     experimental: nil
+   }
+ }}
+json list: {:ok,
+ %{
+   "tools" => [
+     %{
+       "description" => "List threads",
+       "inputSchema" => %{"properties" => %{}, "type" => "object"},
+       "name" => "t3_thread_list"
+     }
+   ]
+ }}
+json call: {:ok,
+ %{
+   "content" => [%{"text" => "{\"threads\":[]}", "type" => "text"}],
+   "isError" => false,
+   "structuredContent" => %{"threads" => []}
+ }}
+json tool_error: {:ok,
+ %{"content" => [%{"text" => "failed", "type" => "text"}], "isError" => true}}
+json rpc_error: {:error, %MCP.Protocol.Error{code: -32602, message: "Bad argument", data: nil}}
+** (exit) exited in: GenServer.call(#PID<0.226.0>, {:call_tool, "http_error", %{}}, 5000)
+    ** (EXIT) time out
+    (elixir 1.20.3) lib/gen_server.ex:1183: GenServer.call/3
+    /tmp/t3-client-evaluation/sdk.exs:9: anonymous fn/4 in :elixir_compiler_0.__FILE__/1
+    (elixir 1.20.3) lib/enum.ex:2622: Enum."-reduce/3-lists^foldl/2-0-"/3
+    /tmp/t3-client-evaluation/sdk.exs:8: anonymous fn/1 in :elixir_compiler_0.__FILE__/1
+    (elixir 1.20.3) lib/enum.ex:1725: Enum."-map/2-lists^map/1-1-"/2
+    /tmp/t3-client-evaluation/sdk.exs:3: (file)

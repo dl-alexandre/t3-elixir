@@ -1,0 +1,94 @@
+json list: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "tools" => [
+       %{
+         "description" => "List threads",
+         "inputSchema" => %{"properties" => %{}, "type" => "object"},
+         "name" => "t3_thread_list"
+       }
+     ]
+   },
+   id: "req_GOUaHHish4f0iNi0GS0=",
+   method: "tools/list",
+   is_error: false
+ }}
+json call: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "content" => [%{"text" => "{\"threads\":[]}", "type" => "text"}],
+     "isError" => false,
+     "structuredContent" => %{"threads" => []}
+   },
+   id: "req_GOUaHHl5XyT0iNjx7uc=",
+   method: "tools/call",
+   is_error: false
+ }}
+json tool_error: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "content" => [%{"text" => "failed", "type" => "text"}],
+     "isError" => true
+   },
+   id: "req_GOUaHHmQw2z0iNg0zt0=",
+   method: "tools/call",
+   is_error: true
+ }}
+json rpc_error: {:error, #MCP.Error<invalid_params: Bad argument>}
+
+00:52:16.182 [error] MCP transport event: http_request_error
+
+00:52:16.185 [error] MCP transport details: %{reason: "{:http_error, 503, \"{}\"}"}
+json http_error: {:error,
+ #MCP.Error<send_failure: Send Failure %{original_reason: {:http_error, 503, "{}"}}>}
+
+00:52:16.185 [error] MCP transport event: http_error
+
+00:52:16.185 [error] MCP transport details: %{status: 503, body: "{}"}
+sse list: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "tools" => [
+       %{
+         "description" => "List threads",
+         "inputSchema" => %{"properties" => %{}, "type" => "object"},
+         "name" => "t3_thread_list"
+       }
+     ]
+   },
+   id: "req_GOUaHPdXOZMmgkPgNpk=",
+   method: "tools/list",
+   is_error: false
+ }}
+sse call: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "content" => [%{"text" => "{\"threads\":[]}", "type" => "text"}],
+     "isError" => false,
+     "structuredContent" => %{"threads" => []}
+   },
+   id: "req_GOUaHPeC0RUmgkOdlPM=",
+   method: "tools/call",
+   is_error: false
+ }}
+sse tool_error: {:ok,
+ %Anubis.MCP.Response{
+   result: %{
+     "content" => [%{"text" => "failed", "type" => "text"}],
+     "isError" => true
+   },
+   id: "req_GOUaHPeXGpomgkNol20=",
+   method: "tools/call",
+   is_error: true
+ }}
+sse rpc_error: {:error, #MCP.Error<invalid_params: Bad argument>}
+
+00:52:18.294 [error] MCP transport event: http_request_error
+sse http_error: {:error,
+ #MCP.Error<send_failure: Send Failure %{original_reason: {:http_error, 503, "{}"}}>}
+
+00:52:18.294 [error] MCP transport details: %{reason: "{:http_error, 503, \"{}\"}"}
+
+00:52:18.294 [error] MCP transport event: http_error
+
+00:52:18.294 [error] MCP transport details: %{status: 503, body: "{}"}

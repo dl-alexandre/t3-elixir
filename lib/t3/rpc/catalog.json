@@ -1,0 +1,1483 @@
+{
+  "upstream_ref": "337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17",
+  "protocol_version": 2,
+  "methods": [
+    {
+      "name": "agentSessions.import",
+      "key": "agentSessionsImport",
+      "stream": false,
+      "definition": "WsAgentSessionsImportRpc",
+      "line": 1382
+    },
+    {
+      "name": "agentSessions.scan",
+      "key": "agentSessionsScan",
+      "stream": false,
+      "definition": "WsAgentSessionsScanRpc",
+      "line": 1376
+    },
+    {
+      "name": "assets.createUrl",
+      "key": "assetsCreateUrl",
+      "stream": false,
+      "definition": "WsAssetsCreateUrlRpc",
+      "line": 1393
+    },
+    {
+      "name": "assets.persistChatAttachments",
+      "key": "assetsPersistChatAttachments",
+      "stream": false,
+      "definition": "WsAssetsPersistChatAttachmentsRpc",
+      "line": 1399
+    },
+    {
+      "name": "attachments.createUploadUrl",
+      "key": "attachmentsCreateUploadUrl",
+      "stream": false,
+      "definition": "WsAttachmentsCreateUploadUrlRpc",
+      "line": 1405
+    },
+    {
+      "name": "attachments.delete",
+      "key": "attachmentsDelete",
+      "stream": false,
+      "definition": "WsAttachmentsDeleteRpc",
+      "line": 1411
+    },
+    {
+      "name": "cloud.getRelayClientStatus",
+      "key": "cloudGetRelayClientStatus",
+      "stream": false,
+      "definition": "WsCloudGetRelayClientStatusRpc",
+      "line": 979
+    },
+    {
+      "name": "cloud.installRelayClient",
+      "key": "cloudInstallRelayClient",
+      "stream": true,
+      "definition": "WsCloudInstallRelayClientRpc",
+      "line": 985
+    },
+    {
+      "name": "device.action",
+      "key": "deviceAction",
+      "stream": false,
+      "definition": "WsDeviceActionRpc",
+      "line": 1709
+    },
+    {
+      "name": "device.close",
+      "key": "deviceClose",
+      "stream": false,
+      "definition": "WsDeviceCloseRpc",
+      "line": 1693
+    },
+    {
+      "name": "device.configure",
+      "key": "deviceConfigure",
+      "stream": false,
+      "definition": "WsDeviceConfigureRpc",
+      "line": 1681
+    },
+    {
+      "name": "device.detail",
+      "key": "deviceDetail",
+      "stream": false,
+      "definition": "WsDeviceDetailRpc",
+      "line": 1703
+    },
+    {
+      "name": "device.easAccount",
+      "key": "deviceEasAccount",
+      "stream": false,
+      "definition": "WsDeviceEasAccountRpc",
+      "line": 1663
+    },
+    {
+      "name": "device.list",
+      "key": "deviceList",
+      "stream": false,
+      "definition": "WsDeviceListRpc",
+      "line": 1675
+    },
+    {
+      "name": "device.open",
+      "key": "deviceOpen",
+      "stream": false,
+      "definition": "WsDeviceOpenRpc",
+      "line": 1687
+    },
+    {
+      "name": "device.shutdown",
+      "key": "deviceShutdown",
+      "stream": false,
+      "definition": "WsDeviceShutdownRpc",
+      "line": 1698
+    },
+    {
+      "name": "device.simlockIdentity",
+      "key": "deviceSimlockIdentity",
+      "stream": false,
+      "definition": "WsDeviceSimlockIdentityRpc",
+      "line": 1669
+    },
+    {
+      "name": "device.testHost",
+      "key": "deviceTestHost",
+      "stream": false,
+      "definition": "WsDeviceTestHostRpc",
+      "line": 1657
+    },
+    {
+      "name": "filesystem.browse",
+      "key": "filesystemBrowse",
+      "stream": false,
+      "definition": "WsFilesystemBrowseRpc",
+      "line": 1370
+    },
+    {
+      "name": "filesystem.getMetadata",
+      "key": "filesystemGetMetadata",
+      "stream": false,
+      "definition": "WsFilesystemGetMetadataRpc",
+      "line": 1364
+    },
+    {
+      "name": "git.preparePullRequestThread",
+      "key": "gitPreparePullRequestThread",
+      "stream": false,
+      "definition": "WsGitPreparePullRequestThreadRpc",
+      "line": 1493
+    },
+    {
+      "name": "git.resolvePullRequest",
+      "key": "gitResolvePullRequest",
+      "stream": false,
+      "definition": "WsGitResolvePullRequestRpc",
+      "line": 1487
+    },
+    {
+      "name": "git.runStackedAction",
+      "key": "gitRunStackedAction",
+      "stream": true,
+      "definition": "WsGitRunStackedActionRpc",
+      "line": 1480
+    },
+    {
+      "name": "guestShare.create",
+      "key": "guestShareCreate",
+      "stream": false,
+      "definition": "WsGuestShareCreateRpc",
+      "line": 1948
+    },
+    {
+      "name": "mcpApps.callTool",
+      "key": "mcpAppsCallTool",
+      "stream": false,
+      "definition": "WsMcpAppsCallToolRpc",
+      "line": 1416
+    },
+    {
+      "name": "mcpApps.readResource",
+      "key": "mcpAppsReadResource",
+      "stream": false,
+      "definition": "WsMcpAppsReadResourceRpc",
+      "line": 1433
+    },
+    {
+      "name": "mcpApps.toolInfo",
+      "key": "mcpAppsToolInfo",
+      "stream": false,
+      "definition": "WsMcpAppsToolInfoRpc",
+      "line": 1422
+    },
+    {
+      "name": "mcpApps.updateModelContext",
+      "key": "mcpAppsUpdateModelContext",
+      "stream": false,
+      "definition": "WsMcpAppsUpdateModelContextRpc",
+      "line": 1428
+    },
+    {
+      "name": "orchestration.dispatchCommand",
+      "key": "dispatchCommand",
+      "stream": false,
+      "definition": "WsOrchestrationV2DispatchCommandRpc",
+      "line": 1722
+    },
+    {
+      "name": "orchestration.forceStopThread",
+      "key": "forceStopThread",
+      "stream": false,
+      "definition": "WsOrchestrationV2ForceStopThreadRpc",
+      "line": 1819
+    },
+    {
+      "name": "orchestration.getArchivedShellSnapshot",
+      "key": "getArchivedShellSnapshot",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetArchivedShellSnapshotRpc",
+      "line": 1765
+    },
+    {
+      "name": "orchestration.getFullThreadDiff",
+      "key": "getFullThreadDiff",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetFullThreadDiffRpc",
+      "line": 1734
+    },
+    {
+      "name": "orchestration.getNativeChildWork",
+      "key": "getNativeChildWork",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetNativeChildWorkRpc",
+      "line": 1834
+    },
+    {
+      "name": "orchestration.getOlderSettledThreads",
+      "key": "getOlderSettledThreads",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetOlderSettledThreadsRpc",
+      "line": 1795
+    },
+    {
+      "name": "orchestration.getThreadFamily",
+      "key": "getThreadFamily",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetThreadFamilyRpc",
+      "line": 1774
+    },
+    {
+      "name": "orchestration.getThreadProjection",
+      "key": "getThreadProjection",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetThreadProjectionRpc",
+      "line": 1804
+    },
+    {
+      "name": "orchestration.getThreadTitles",
+      "key": "getThreadTitles",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetThreadTitlesRpc",
+      "line": 1780
+    },
+    {
+      "name": "orchestration.getTurnDiff",
+      "key": "getTurnDiff",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetTurnDiffRpc",
+      "line": 1728
+    },
+    {
+      "name": "orchestration.getTurnItem",
+      "key": "getTurnItem",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetTurnItemRpc",
+      "line": 1843
+    },
+    {
+      "name": "orchestration.getWorkflowScript",
+      "key": "getWorkflowScript",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetWorkflowScriptRpc",
+      "line": 1825
+    },
+    {
+      "name": "orchestration.getWorktreeThreadIds",
+      "key": "getWorktreeThreadIds",
+      "stream": false,
+      "definition": "WsOrchestrationV2GetWorktreeThreadIdsRpc",
+      "line": 1786
+    },
+    {
+      "name": "orchestration.launchThread",
+      "key": "launchThread",
+      "stream": false,
+      "definition": "WsOrchestrationV2LaunchThreadRpc",
+      "line": 1849
+    },
+    {
+      "name": "orchestration.searchThread",
+      "key": "searchThread",
+      "stream": false,
+      "definition": "WsOrchestrationV2SearchThreadRpc",
+      "line": 1743
+    },
+    {
+      "name": "orchestration.searchThreadStream",
+      "key": "searchThreadStream",
+      "stream": true,
+      "definition": "WsOrchestrationV2SearchThreadStreamRpc",
+      "line": 1749
+    },
+    {
+      "name": "orchestration.searchThreads",
+      "key": "searchThreads",
+      "stream": false,
+      "definition": "WsOrchestrationV2SearchThreadsRpc",
+      "line": 1759
+    },
+    {
+      "name": "orchestration.stopWorkflow",
+      "key": "stopWorkflow",
+      "stream": false,
+      "definition": "WsOrchestrationV2StopWorkflowRpc",
+      "line": 1813
+    },
+    {
+      "name": "orchestration.subscribeCommandOutput",
+      "key": "subscribeCommandOutput",
+      "stream": true,
+      "definition": "WsOrchestrationV2SubscribeCommandOutputRpc",
+      "line": 1869
+    },
+    {
+      "name": "orchestration.subscribeShell",
+      "key": "subscribeShell",
+      "stream": true,
+      "definition": "WsOrchestrationV2SubscribeShellRpc",
+      "line": 1855
+    },
+    {
+      "name": "orchestration.subscribeThread",
+      "key": "subscribeThread",
+      "stream": true,
+      "definition": "WsOrchestrationV2SubscribeThreadRpc",
+      "line": 1862
+    },
+    {
+      "name": "peerLinks.answerRequest",
+      "key": "peerLinksAnswerRequest",
+      "stream": false,
+      "definition": "WsPeerLinksAnswerRequestRpc",
+      "line": 818
+    },
+    {
+      "name": "peerLinks.link",
+      "key": "peerLinksLink",
+      "stream": false,
+      "definition": "WsPeerLinksLinkRpc",
+      "line": 806
+    },
+    {
+      "name": "peerLinks.list",
+      "key": "peerLinksList",
+      "stream": false,
+      "definition": "WsPeerLinksListRpc",
+      "line": 800
+    },
+    {
+      "name": "peerLinks.unlink",
+      "key": "peerLinksUnlink",
+      "stream": false,
+      "definition": "WsPeerLinksUnlinkRpc",
+      "line": 812
+    },
+    {
+      "name": "preview.adjust",
+      "key": "previewAdjust",
+      "stream": false,
+      "definition": "WsPreviewAdjustRpc",
+      "line": 1604
+    },
+    {
+      "name": "preview.clearProfile",
+      "key": "previewClearProfile",
+      "stream": false,
+      "definition": "WsPreviewClearProfileRpc",
+      "line": 1621
+    },
+    {
+      "name": "preview.close",
+      "key": "previewClose",
+      "stream": false,
+      "definition": "WsPreviewCloseRpc",
+      "line": 1610
+    },
+    {
+      "name": "preview.list",
+      "key": "previewList",
+      "stream": false,
+      "definition": "WsPreviewListRpc",
+      "line": 1615
+    },
+    {
+      "name": "preview.open",
+      "key": "previewOpen",
+      "stream": false,
+      "definition": "WsPreviewOpenRpc",
+      "line": 1592
+    },
+    {
+      "name": "preview.reportProfiles",
+      "key": "previewReportProfiles",
+      "stream": false,
+      "definition": "WsPreviewReportProfilesRpc",
+      "line": 1626
+    },
+    {
+      "name": "preview.reportStatus",
+      "key": "previewReportStatus",
+      "stream": false,
+      "definition": "WsPreviewReportStatusRpc",
+      "line": 1631
+    },
+    {
+      "name": "preview.resize",
+      "key": "previewResize",
+      "stream": false,
+      "definition": "WsPreviewResizeRpc",
+      "line": 1598
+    },
+    {
+      "name": "preview.stopLocalServer",
+      "key": "previewStopLocalServer",
+      "stream": false,
+      "definition": "WsPreviewStopLocalServerRpc",
+      "line": 1643
+    },
+    {
+      "name": "projectClone.cancel",
+      "key": "projectCloneCancel",
+      "stream": false,
+      "definition": "WsProjectCloneCancelRpc",
+      "line": 1274
+    },
+    {
+      "name": "projectClone.retry",
+      "key": "projectCloneRetry",
+      "stream": false,
+      "definition": "WsProjectCloneRetryRpc",
+      "line": 1280
+    },
+    {
+      "name": "projectClone.start",
+      "key": "projectCloneStart",
+      "stream": false,
+      "definition": "WsProjectCloneStartRpc",
+      "line": 1264
+    },
+    {
+      "name": "projects.createFromThread",
+      "key": "projectsCreateFromThread",
+      "stream": false,
+      "definition": "WsProjectsCreateFromThreadRpc",
+      "line": 1353
+    },
+    {
+      "name": "projects.createNew",
+      "key": "projectsCreateNew",
+      "stream": false,
+      "definition": "WsProjectsCreateNewRpc",
+      "line": 1347
+    },
+    {
+      "name": "projects.ensureScratch",
+      "key": "projectsEnsureScratch",
+      "stream": false,
+      "definition": "WsProjectsEnsureScratchRpc",
+      "line": 1341
+    },
+    {
+      "name": "projects.listEntries",
+      "key": "projectsListEntries",
+      "stream": false,
+      "definition": "WsProjectsListEntriesRpc",
+      "line": 1311
+    },
+    {
+      "name": "projects.listIgnoredFiles",
+      "key": "projectsListIgnoredFiles",
+      "stream": false,
+      "definition": "WsProjectsListIgnoredFilesRpc",
+      "line": 1317
+    },
+    {
+      "name": "projects.mutate",
+      "key": "projectsMutate",
+      "stream": false,
+      "definition": "WsProjectsMutateRpc",
+      "line": 1335
+    },
+    {
+      "name": "projects.readFile",
+      "key": "projectsReadFile",
+      "stream": false,
+      "definition": "WsProjectsReadFileRpc",
+      "line": 1323
+    },
+    {
+      "name": "projects.searchContents",
+      "key": "projectsSearchContents",
+      "stream": false,
+      "definition": "WsProjectsSearchContentsRpc",
+      "line": 1305
+    },
+    {
+      "name": "projects.searchEntries",
+      "key": "projectsSearchEntries",
+      "stream": false,
+      "definition": "WsProjectsSearchEntriesRpc",
+      "line": 1299
+    },
+    {
+      "name": "projects.writeFile",
+      "key": "projectsWriteFile",
+      "stream": false,
+      "definition": "WsProjectsWriteFileRpc",
+      "line": 1329
+    },
+    {
+      "name": "provider.auth.cancel",
+      "key": "providerAuthCancel",
+      "stream": false,
+      "definition": "WsProviderAuthCancelRpc",
+      "line": 712
+    },
+    {
+      "name": "provider.auth.complete",
+      "key": "providerAuthComplete",
+      "stream": false,
+      "definition": "WsProviderAuthCompleteRpc",
+      "line": 689
+    },
+    {
+      "name": "provider.auth.logout",
+      "key": "providerAuthLogout",
+      "stream": false,
+      "definition": "WsProviderAuthLogoutRpc",
+      "line": 718
+    },
+    {
+      "name": "provider.auth.respond",
+      "key": "providerAuthRespond",
+      "stream": false,
+      "definition": "WsProviderAuthRespondRpc",
+      "line": 683
+    },
+    {
+      "name": "provider.auth.start",
+      "key": "providerAuthStart",
+      "stream": false,
+      "definition": "WsProviderAuthStartRpc",
+      "line": 677
+    },
+    {
+      "name": "provider.auth.subscribe",
+      "key": "providerAuthSubscribe",
+      "stream": true,
+      "definition": "WsProviderAuthSubscribeRpc",
+      "line": 724
+    },
+    {
+      "name": "provider.chatgpt.handoff.subscribe",
+      "key": "chatGptHandoffSubscribe",
+      "stream": true,
+      "definition": "WsChatGptHandoffSubscribeRpc",
+      "line": 705
+    },
+    {
+      "name": "provider.chatgpt.import-profile",
+      "key": "chatGptImportProfile",
+      "stream": false,
+      "definition": "WsChatGptImportProfileRpc",
+      "line": 700
+    },
+    {
+      "name": "provider.chatgpt.reconnect-profile",
+      "key": "chatGptReconnectProfile",
+      "stream": false,
+      "definition": "WsChatGptReconnectProfileRpc",
+      "line": 695
+    },
+    {
+      "name": "provider.consumeResetCredit",
+      "key": "providerConsumeResetCredit",
+      "stream": false,
+      "definition": "WsProviderConsumeResetCreditRpc",
+      "line": 671
+    },
+    {
+      "name": "provider.install.cancel",
+      "key": "providerInstallCancel",
+      "stream": false,
+      "definition": "WsProviderInstallCancelRpc",
+      "line": 737
+    },
+    {
+      "name": "provider.install.remove",
+      "key": "providerInstallRemove",
+      "stream": false,
+      "definition": "WsProviderInstallRemoveRpc",
+      "line": 750
+    },
+    {
+      "name": "provider.install.start",
+      "key": "providerInstallStart",
+      "stream": false,
+      "definition": "WsProviderInstallStartRpc",
+      "line": 731
+    },
+    {
+      "name": "provider.install.subscribe",
+      "key": "providerInstallSubscribe",
+      "stream": true,
+      "definition": "WsProviderInstallSubscribeRpc",
+      "line": 743
+    },
+    {
+      "name": "provider.uploadFeedback",
+      "key": "providerUploadFeedback",
+      "stream": false,
+      "definition": "WsProviderUploadFeedbackRpc",
+      "line": 1439
+    },
+    {
+      "name": "pullRequests.activity",
+      "key": "pullRequestsActivity",
+      "stream": false,
+      "definition": "WsPullRequestsActivityRpc",
+      "line": 1070
+    },
+    {
+      "name": "pullRequests.changeBreakdown",
+      "key": "pullRequestsChangeBreakdown",
+      "stream": false,
+      "definition": "WsPullRequestsChangeBreakdownRpc",
+      "line": 1106
+    },
+    {
+      "name": "pullRequests.checks",
+      "key": "pullRequestsChecks",
+      "stream": false,
+      "definition": "WsPullRequestsChecksRpc",
+      "line": 1064
+    },
+    {
+      "name": "pullRequests.comment",
+      "key": "pullRequestsComment",
+      "stream": false,
+      "definition": "WsPullRequestsCommentRpc",
+      "line": 1130
+    },
+    {
+      "name": "pullRequests.detail",
+      "key": "pullRequestsDetail",
+      "stream": false,
+      "definition": "WsPullRequestsDetailRpc",
+      "line": 1052
+    },
+    {
+      "name": "pullRequests.diffFileContents",
+      "key": "pullRequestsDiffFileContents",
+      "stream": false,
+      "definition": "WsPullRequestsDiffFileContentsRpc",
+      "line": 1094
+    },
+    {
+      "name": "pullRequests.filesViewed",
+      "key": "pullRequestsFilesViewed",
+      "stream": false,
+      "definition": "WsPullRequestsFilesViewedRpc",
+      "line": 1100
+    },
+    {
+      "name": "pullRequests.filterOptions",
+      "key": "pullRequestsFilterOptions",
+      "stream": false,
+      "definition": "WsPullRequestsFilterOptionsRpc",
+      "line": 1016
+    },
+    {
+      "name": "pullRequests.generateReviewGuide",
+      "key": "pullRequestsGenerateReviewGuide",
+      "stream": false,
+      "definition": "WsPullRequestsGenerateReviewGuideRpc",
+      "line": 1082
+    },
+    {
+      "name": "pullRequests.invalidate",
+      "key": "pullRequestsInvalidate",
+      "stream": false,
+      "definition": "WsPullRequestsInvalidateRpc",
+      "line": 1166
+    },
+    {
+      "name": "pullRequests.labelCandidates",
+      "key": "pullRequestsLabelCandidates",
+      "stream": false,
+      "definition": "WsPullRequestsLabelCandidatesRpc",
+      "line": 1198
+    },
+    {
+      "name": "pullRequests.linkedThreads",
+      "key": "pullRequestsLinkedThreads",
+      "stream": false,
+      "definition": "WsPullRequestsLinkedThreadsRpc",
+      "line": 1046
+    },
+    {
+      "name": "pullRequests.list",
+      "key": "pullRequestsList",
+      "stream": false,
+      "definition": "WsPullRequestsListRpc",
+      "line": 1003
+    },
+    {
+      "name": "pullRequests.listStats",
+      "key": "pullRequestsListStats",
+      "stream": false,
+      "definition": "WsPullRequestsListStatsRpc",
+      "line": 1010
+    },
+    {
+      "name": "pullRequests.preview",
+      "key": "pullRequestsPreview",
+      "stream": false,
+      "definition": "WsPullRequestsPreviewRpc",
+      "line": 1058
+    },
+    {
+      "name": "pullRequests.replyToThread",
+      "key": "pullRequestsReplyToThread",
+      "stream": false,
+      "definition": "WsPullRequestsReplyToThreadRpc",
+      "line": 1148
+    },
+    {
+      "name": "pullRequests.reportState",
+      "key": "pullRequestsReportState",
+      "stream": false,
+      "definition": "WsPullRequestsReportStateRpc",
+      "line": 1172
+    },
+    {
+      "name": "pullRequests.requestReviewers",
+      "key": "pullRequestsRequestReviewers",
+      "stream": false,
+      "definition": "WsPullRequestsRequestReviewersRpc",
+      "line": 1192
+    },
+    {
+      "name": "pullRequests.reviewGuide",
+      "key": "pullRequestsReviewGuide",
+      "stream": false,
+      "definition": "WsPullRequestsReviewGuideRpc",
+      "line": 1076
+    },
+    {
+      "name": "pullRequests.reviewerCandidates",
+      "key": "pullRequestsReviewerCandidates",
+      "stream": false,
+      "definition": "WsPullRequestsReviewerCandidatesRpc",
+      "line": 1186
+    },
+    {
+      "name": "pullRequests.routing",
+      "key": "pullRequestsRouting",
+      "stream": false,
+      "definition": "WsPullRequestsRoutingRpc",
+      "line": 1022
+    },
+    {
+      "name": "pullRequests.routingIdentity",
+      "key": "pullRequestsRoutingIdentity",
+      "stream": false,
+      "definition": "WsPullRequestsRoutingIdentityRpc",
+      "line": 1028
+    },
+    {
+      "name": "pullRequests.runAction",
+      "key": "pullRequestsRunAction",
+      "stream": false,
+      "definition": "WsPullRequestsRunActionRpc",
+      "line": 1118
+    },
+    {
+      "name": "pullRequests.setFilesViewed",
+      "key": "pullRequestsSetFilesViewed",
+      "stream": false,
+      "definition": "WsPullRequestsSetFilesViewedRpc",
+      "line": 1112
+    },
+    {
+      "name": "pullRequests.setLabels",
+      "key": "pullRequestsSetLabels",
+      "stream": false,
+      "definition": "WsPullRequestsSetLabelsRpc",
+      "line": 1204
+    },
+    {
+      "name": "pullRequests.setReaction",
+      "key": "pullRequestsSetReaction",
+      "stream": false,
+      "definition": "WsPullRequestsSetReactionRpc",
+      "line": 1160
+    },
+    {
+      "name": "pullRequests.setThreadResolution",
+      "key": "pullRequestsSetThreadResolution",
+      "stream": false,
+      "definition": "WsPullRequestsSetThreadResolutionRpc",
+      "line": 1154
+    },
+    {
+      "name": "pullRequests.stack",
+      "key": "pullRequestsStack",
+      "stream": false,
+      "definition": "WsPullRequestsStackRpc",
+      "line": 1040
+    },
+    {
+      "name": "pullRequests.submitReview",
+      "key": "pullRequestsSubmitReview",
+      "stream": false,
+      "definition": "WsPullRequestsSubmitReviewRpc",
+      "line": 1142
+    },
+    {
+      "name": "pullRequests.subscribeRefreshes",
+      "key": "pullRequestsSubscribeRefreshes",
+      "stream": true,
+      "definition": "WsPullRequestsSubscribeRefreshesRpc",
+      "line": 1178
+    },
+    {
+      "name": "pullRequests.summary",
+      "key": "pullRequestsSummary",
+      "stream": false,
+      "definition": "WsPullRequestsSummaryRpc",
+      "line": 1034
+    },
+    {
+      "name": "pullRequests.threadComments",
+      "key": "pullRequestsThreadComments",
+      "stream": false,
+      "definition": "WsPullRequestsThreadCommentsRpc",
+      "line": 1088
+    },
+    {
+      "name": "pullRequests.update",
+      "key": "pullRequestsUpdate",
+      "stream": false,
+      "definition": "WsPullRequestsUpdateRpc",
+      "line": 1124
+    },
+    {
+      "name": "pullRequests.updateComment",
+      "key": "pullRequestsUpdateComment",
+      "stream": false,
+      "definition": "WsPullRequestsUpdateCommentRpc",
+      "line": 1136
+    },
+    {
+      "name": "review.getBranchCommits",
+      "key": "reviewGetBranchCommits",
+      "stream": false,
+      "definition": "WsReviewGetBranchCommitsRpc",
+      "line": 1534
+    },
+    {
+      "name": "review.getDiffFileContents",
+      "key": "reviewGetDiffFileContents",
+      "stream": false,
+      "definition": "WsReviewGetDiffFileContentsRpc",
+      "line": 1546
+    },
+    {
+      "name": "review.getDiffPreview",
+      "key": "reviewGetDiffPreview",
+      "stream": false,
+      "definition": "WsReviewGetDiffPreviewRpc",
+      "line": 1540
+    },
+    {
+      "name": "scheduledTasks.delete",
+      "key": "scheduledTasksDelete",
+      "stream": false,
+      "definition": "WsScheduledTasksDeleteRpc",
+      "line": 1927
+    },
+    {
+      "name": "scheduledTasks.getWebhookDelivery",
+      "key": "scheduledTasksGetWebhookDelivery",
+      "stream": false,
+      "definition": "WsScheduledTasksGetWebhookDeliveryRpc",
+      "line": 1968
+    },
+    {
+      "name": "scheduledTasks.listWebhookDeliveries",
+      "key": "scheduledTasksListWebhookDeliveries",
+      "stream": false,
+      "definition": "WsScheduledTasksListWebhookDeliveriesRpc",
+      "line": 1959
+    },
+    {
+      "name": "scheduledTasks.rotateWebhookToken",
+      "key": "scheduledTasksRotateWebhookToken",
+      "stream": false,
+      "definition": "WsScheduledTasksRotateWebhookTokenRpc",
+      "line": 1939
+    },
+    {
+      "name": "scheduledTasks.runNow",
+      "key": "scheduledTasksRunNow",
+      "stream": false,
+      "definition": "WsScheduledTasksRunNowRpc",
+      "line": 1933
+    },
+    {
+      "name": "scheduledTasks.setEnabled",
+      "key": "scheduledTasksSetEnabled",
+      "stream": false,
+      "definition": "WsScheduledTasksSetEnabledRpc",
+      "line": 1921
+    },
+    {
+      "name": "scheduledTasks.subscribe",
+      "key": "scheduledTasksSubscribe",
+      "stream": true,
+      "definition": "WsScheduledTasksSubscribeRpc",
+      "line": 1908
+    },
+    {
+      "name": "scheduledTasks.upsert",
+      "key": "scheduledTasksUpsert",
+      "stream": false,
+      "definition": "WsScheduledTasksUpsertRpc",
+      "line": 1915
+    },
+    {
+      "name": "secrets.answerRequest",
+      "key": "secretsAnswerRequest",
+      "stream": false,
+      "definition": "WsSecretsAnswerRequestRpc",
+      "line": 1954
+    },
+    {
+      "name": "server.acceptAcpRegistryUrlAuth",
+      "key": "serverAcceptAcpRegistryUrlAuth",
+      "stream": false,
+      "definition": "WsServerAcceptAcpRegistryUrlAuthRpc",
+      "line": 859
+    },
+    {
+      "name": "server.checkOtlpEndpoint",
+      "key": "serverCheckOtlpEndpoint",
+      "stream": false,
+      "definition": "WsServerCheckOtlpEndpointRpc",
+      "line": 949
+    },
+    {
+      "name": "server.commitDesktopUpdate",
+      "key": "serverCommitDesktopUpdate",
+      "stream": false,
+      "definition": "WsServerCommitDesktopUpdateRpc",
+      "line": 775
+    },
+    {
+      "name": "server.deleteAcpRegistrySession",
+      "key": "serverDeleteAcpRegistrySession",
+      "stream": false,
+      "definition": "WsServerDeleteAcpRegistrySessionRpc",
+      "line": 877
+    },
+    {
+      "name": "server.disableAcpRegistryProvider",
+      "key": "serverDisableAcpRegistryProvider",
+      "stream": false,
+      "definition": "WsServerDisableAcpRegistryProviderRpc",
+      "line": 895
+    },
+    {
+      "name": "server.discoverSourceControl",
+      "key": "serverDiscoverSourceControl",
+      "stream": false,
+      "definition": "WsServerDiscoverSourceControlRpc",
+      "line": 832
+    },
+    {
+      "name": "server.getConfig",
+      "key": "serverGetConfig",
+      "stream": false,
+      "definition": "WsServerGetConfigRpc",
+      "line": 635
+    },
+    {
+      "name": "server.getDatabaseStorage",
+      "key": "serverGetDatabaseStorage",
+      "stream": true,
+      "definition": "WsServerGetDatabaseStorageRpc",
+      "line": 793
+    },
+    {
+      "name": "server.getHostResources",
+      "key": "serverGetHostResources",
+      "stream": false,
+      "definition": "WsServerGetHostResourcesRpc",
+      "line": 922
+    },
+    {
+      "name": "server.getNpmRelease",
+      "key": "serverGetNpmRelease",
+      "stream": false,
+      "definition": "WsServerGetNpmReleaseRpc",
+      "line": 756
+    },
+    {
+      "name": "server.getProcessDiagnostics",
+      "key": "serverGetProcessDiagnostics",
+      "stream": false,
+      "definition": "WsServerGetProcessDiagnosticsRpc",
+      "line": 916
+    },
+    {
+      "name": "server.getProcessResourceHistory",
+      "key": "serverGetProcessResourceHistory",
+      "stream": false,
+      "definition": "WsServerGetProcessResourceHistoryRpc",
+      "line": 928
+    },
+    {
+      "name": "server.getResourceTelemetryHistory",
+      "key": "serverGetResourceTelemetryHistory",
+      "stream": false,
+      "definition": "WsServerGetResourceTelemetryHistoryRpc",
+      "line": 934
+    },
+    {
+      "name": "server.getStorageCleanupReport",
+      "key": "serverGetStorageCleanupReport",
+      "stream": true,
+      "definition": "WsServerGetStorageCleanupReportRpc",
+      "line": 786
+    },
+    {
+      "name": "server.getTraceDiagnostics",
+      "key": "serverGetTraceDiagnostics",
+      "stream": false,
+      "definition": "WsServerGetTraceDiagnosticsRpc",
+      "line": 910
+    },
+    {
+      "name": "server.getUsageSummary",
+      "key": "serverGetUsageSummary",
+      "stream": false,
+      "definition": "WsServerGetUsageSummaryRpc",
+      "line": 961
+    },
+    {
+      "name": "server.importAcpRegistrySession",
+      "key": "serverImportAcpRegistrySession",
+      "stream": false,
+      "definition": "WsServerImportAcpRegistrySessionRpc",
+      "line": 871
+    },
+    {
+      "name": "server.listAcpRegistryProviders",
+      "key": "serverListAcpRegistryProviders",
+      "stream": false,
+      "definition": "WsServerListAcpRegistryProvidersRpc",
+      "line": 883
+    },
+    {
+      "name": "server.listAcpRegistrySessions",
+      "key": "serverListAcpRegistrySessions",
+      "stream": false,
+      "definition": "WsServerListAcpRegistrySessionsRpc",
+      "line": 865
+    },
+    {
+      "name": "server.logoutAcpRegistry",
+      "key": "serverLogoutAcpRegistry",
+      "stream": false,
+      "definition": "WsServerLogoutAcpRegistryRpc",
+      "line": 904
+    },
+    {
+      "name": "server.prepareAcpRegistryAgent",
+      "key": "serverPrepareAcpRegistryAgent",
+      "stream": false,
+      "definition": "WsServerPrepareAcpRegistryAgentRpc",
+      "line": 844
+    },
+    {
+      "name": "server.prepareTriage",
+      "key": "serverPrepareTriage",
+      "stream": false,
+      "definition": "WsServerPrepareTriageRpc",
+      "line": 955
+    },
+    {
+      "name": "server.probe",
+      "key": "serverProbe",
+      "stream": false,
+      "definition": "WsServerProbeRpc",
+      "line": 629
+    },
+    {
+      "name": "server.refreshProviders",
+      "key": "serverRefreshProviders",
+      "stream": false,
+      "definition": "WsServerRefreshProvidersRpc",
+      "line": 641
+    },
+    {
+      "name": "server.refreshUsageRates",
+      "key": "serverRefreshUsageRates",
+      "stream": false,
+      "definition": "WsServerRefreshUsageRatesRpc",
+      "line": 967
+    },
+    {
+      "name": "server.removeKeybinding",
+      "key": "serverRemoveKeybinding",
+      "stream": false,
+      "definition": "WsServerRemoveKeybindingRpc",
+      "line": 623
+    },
+    {
+      "name": "server.reportClientActivity",
+      "key": "serverReportClientActivity",
+      "stream": false,
+      "definition": "WsServerReportClientActivityRpc",
+      "line": 992
+    },
+    {
+      "name": "server.retryResourceTelemetry",
+      "key": "serverRetryResourceTelemetry",
+      "stream": false,
+      "definition": "WsServerRetryResourceTelemetryRpc",
+      "line": 943
+    },
+    {
+      "name": "server.runStorageCleanup",
+      "key": "serverRunStorageCleanup",
+      "stream": false,
+      "definition": "WsServerRunStorageCleanupRpc",
+      "line": 781
+    },
+    {
+      "name": "server.searchAcpRegistry",
+      "key": "serverSearchAcpRegistry",
+      "stream": false,
+      "definition": "WsServerSearchAcpRegistryRpc",
+      "line": 838
+    },
+    {
+      "name": "server.setAcpRegistryProvider",
+      "key": "serverSetAcpRegistryProvider",
+      "stream": false,
+      "definition": "WsServerSetAcpRegistryProviderRpc",
+      "line": 889
+    },
+    {
+      "name": "server.signalProcess",
+      "key": "serverSignalProcess",
+      "stream": false,
+      "definition": "WsServerSignalProcessRpc",
+      "line": 973
+    },
+    {
+      "name": "server.uninstallAcpRegistryManagedBinary",
+      "key": "serverUninstallAcpRegistryManagedBinary",
+      "stream": false,
+      "definition": "WsServerUninstallAcpRegistryManagedBinaryRpc",
+      "line": 850
+    },
+    {
+      "name": "server.updateProvider",
+      "key": "serverUpdateProvider",
+      "stream": false,
+      "definition": "WsServerUpdateProviderRpc",
+      "line": 663
+    },
+    {
+      "name": "server.updateServer",
+      "key": "serverUpdateServer",
+      "stream": false,
+      "definition": "WsServerUpdateServerRpc",
+      "line": 762
+    },
+    {
+      "name": "server.updateServerWithProgress",
+      "key": "serverUpdateServerWithProgress",
+      "stream": true,
+      "definition": "WsServerUpdateServerWithProgressRpc",
+      "line": 768
+    },
+    {
+      "name": "server.updateSettings",
+      "key": "serverUpdateSettings",
+      "stream": false,
+      "definition": "WsServerUpdateSettingsRpc",
+      "line": 823
+    },
+    {
+      "name": "server.upsertKeybinding",
+      "key": "serverUpsertKeybinding",
+      "stream": false,
+      "definition": "WsServerUpsertKeybindingRpc",
+      "line": 617
+    },
+    {
+      "name": "shell.openInEditor",
+      "key": "shellOpenInEditor",
+      "stream": false,
+      "definition": "WsShellOpenInEditorRpc",
+      "line": 1359
+    },
+    {
+      "name": "sourceControl.appAccess",
+      "key": "sourceControlAppAccess",
+      "stream": false,
+      "definition": "WsSourceControlAppAccessRpc",
+      "line": 1243
+    },
+    {
+      "name": "sourceControl.cloneRepository",
+      "key": "sourceControlCloneRepository",
+      "stream": false,
+      "definition": "WsSourceControlCloneRepositoryRpc",
+      "line": 1216
+    },
+    {
+      "name": "sourceControl.lookupRepository",
+      "key": "sourceControlLookupRepository",
+      "stream": false,
+      "definition": "WsSourceControlLookupRepositoryRpc",
+      "line": 1210
+    },
+    {
+      "name": "sourceControl.publishRepository",
+      "key": "sourceControlPublishRepository",
+      "stream": false,
+      "definition": "WsSourceControlPublishRepositoryRpc",
+      "line": 1293
+    },
+    {
+      "name": "sourceControl.signInCancel",
+      "key": "sourceControlSignInCancel",
+      "stream": false,
+      "definition": "WsSourceControlSignInCancelRpc",
+      "line": 1237
+    },
+    {
+      "name": "sourceControl.signInStart",
+      "key": "sourceControlSignInStart",
+      "stream": false,
+      "definition": "WsSourceControlSignInStartRpc",
+      "line": 1223
+    },
+    {
+      "name": "sourceControl.signInWait",
+      "key": "sourceControlSignInWait",
+      "stream": false,
+      "definition": "WsSourceControlSignInWaitRpc",
+      "line": 1230
+    },
+    {
+      "name": "sourceControl.star",
+      "key": "sourceControlStar",
+      "stream": false,
+      "definition": "WsSourceControlStarRpc",
+      "line": 1257
+    },
+    {
+      "name": "sourceControl.starred",
+      "key": "sourceControlStarred",
+      "stream": false,
+      "definition": "WsSourceControlStarredRpc",
+      "line": 1250
+    },
+    {
+      "name": "subscribeAuthAccess",
+      "key": "subscribeAuthAccess",
+      "stream": true,
+      "definition": "WsSubscribeAuthAccessRpc",
+      "line": 1977
+    },
+    {
+      "name": "subscribeDeviceState",
+      "key": "subscribeDeviceState",
+      "stream": true,
+      "definition": "WsSubscribeDeviceStateRpc",
+      "line": 1715
+    },
+    {
+      "name": "subscribeDiscoveredLocalServers",
+      "key": "subscribeDiscoveredLocalServers",
+      "stream": true,
+      "definition": "WsSubscribeDiscoveredLocalServersRpc",
+      "line": 1648
+    },
+    {
+      "name": "subscribePreviewEvents",
+      "key": "subscribePreviewEvents",
+      "stream": true,
+      "definition": "WsSubscribePreviewEventsRpc",
+      "line": 1636
+    },
+    {
+      "name": "subscribeProjectClones",
+      "key": "subscribeProjectClones",
+      "stream": true,
+      "definition": "WsSubscribeProjectClonesRpc",
+      "line": 1286
+    },
+    {
+      "name": "subscribeResourceTelemetry",
+      "key": "subscribeResourceTelemetry",
+      "stream": true,
+      "definition": "WsSubscribeResourceTelemetryRpc",
+      "line": 1984
+    },
+    {
+      "name": "subscribeServerConfig",
+      "key": "subscribeServerConfig",
+      "stream": true,
+      "definition": "WsSubscribeServerConfigRpc",
+      "line": 1886
+    },
+    {
+      "name": "subscribeServerLifecycle",
+      "key": "subscribeServerLifecycle",
+      "stream": true,
+      "definition": "WsSubscribeServerLifecycleRpc",
+      "line": 1901
+    },
+    {
+      "name": "subscribeTerminalMetadata",
+      "key": "subscribeTerminalMetadata",
+      "stream": true,
+      "definition": "WsSubscribeTerminalMetadataRpc",
+      "line": 1879
+    },
+    {
+      "name": "subscribeVcsStatus",
+      "key": "subscribeVcsStatus",
+      "stream": true,
+      "definition": "WsSubscribeVcsStatusRpc",
+      "line": 1445
+    },
+    {
+      "name": "subscribeWorktreeSetup",
+      "key": "subscribeWorktreeSetup",
+      "stream": true,
+      "definition": "WsSubscribeWorktreeSetupRpc",
+      "line": 1467
+    },
+    {
+      "name": "terminal.attach",
+      "key": "terminalAttach",
+      "stream": true,
+      "definition": "WsTerminalAttachRpc",
+      "line": 1558
+    },
+    {
+      "name": "terminal.clear",
+      "key": "terminalClear",
+      "stream": false,
+      "definition": "WsTerminalClearRpc",
+      "line": 1582
+    },
+    {
+      "name": "terminal.close",
+      "key": "terminalClose",
+      "stream": false,
+      "definition": "WsTerminalCloseRpc",
+      "line": 1587
+    },
+    {
+      "name": "terminal.observe",
+      "key": "terminalObserve",
+      "stream": true,
+      "definition": "WsTerminalObserveRpc",
+      "line": 1565
+    },
+    {
+      "name": "terminal.open",
+      "key": "terminalOpen",
+      "stream": false,
+      "definition": "WsTerminalOpenRpc",
+      "line": 1552
+    },
+    {
+      "name": "terminal.resize",
+      "key": "terminalResize",
+      "stream": false,
+      "definition": "WsTerminalResizeRpc",
+      "line": 1577
+    },
+    {
+      "name": "terminal.write",
+      "key": "terminalWrite",
+      "stream": false,
+      "definition": "WsTerminalWriteRpc",
+      "line": 1572
+    },
+    {
+      "name": "vcs.createRef",
+      "key": "vcsCreateRef",
+      "stream": false,
+      "definition": "WsVcsCreateRefRpc",
+      "line": 1517
+    },
+    {
+      "name": "vcs.createWorktree",
+      "key": "vcsCreateWorktree",
+      "stream": false,
+      "definition": "WsVcsCreateWorktreeRpc",
+      "line": 1505
+    },
+    {
+      "name": "vcs.init",
+      "key": "vcsInit",
+      "stream": false,
+      "definition": "WsVcsInitRpc",
+      "line": 1529
+    },
+    {
+      "name": "vcs.listRefs",
+      "key": "vcsListRefs",
+      "stream": false,
+      "definition": "WsVcsListRefsRpc",
+      "line": 1499
+    },
+    {
+      "name": "vcs.pull",
+      "key": "vcsPull",
+      "stream": false,
+      "definition": "WsVcsPullRpc",
+      "line": 1452
+    },
+    {
+      "name": "vcs.refreshStatus",
+      "key": "vcsRefreshStatus",
+      "stream": false,
+      "definition": "WsVcsRefreshStatusRpc",
+      "line": 1458
+    },
+    {
+      "name": "vcs.removeWorktree",
+      "key": "vcsRemoveWorktree",
+      "stream": false,
+      "definition": "WsVcsRemoveWorktreeRpc",
+      "line": 1512
+    },
+    {
+      "name": "vcs.switchRef",
+      "key": "vcsSwitchRef",
+      "stream": false,
+      "definition": "WsVcsSwitchRefRpc",
+      "line": 1523
+    },
+    {
+      "name": "worktreeSetup.cancel",
+      "key": "worktreeSetupCancel",
+      "stream": false,
+      "definition": "WsWorktreeSetupCancelRpc",
+      "line": 1474
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+
+00:52:14.065 [debug] SessionManager started
+json list: {:ok,
+ %ExMCP.Response{
+   content: [],
+   meta: nil,
+   tool_name: nil,
+   request_id: nil,
+   server_info: nil,
+   is_error: false,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: nil,
+   resourceLinks: nil,
+   tools: [
+     %{
+       :name => "t3_thread_list",
+       :description => "List threads",
+       :inputSchema => %{
+         :type => "object",
+         :properties => %{},
+         "properties" => %{},
+         "type" => "object"
+       },
+       "description" => "List threads",
+       "inputSchema" => %{"properties" => %{}, "type" => "object"},
+       "name" => "t3_thread_list"
+     }
+   ],
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["tools"],
+   content_keys: [],
+   extra_fields: %{}
+ }}
+json call: {:ok,
+ %ExMCP.Response{
+   content: [
+     %{data: nil, type: "text", text: "{\"threads\":[]}", annotations: nil}
+   ],
+   meta: nil,
+   tool_name: "t3_thread_list",
+   request_id: nil,
+   server_info: nil,
+   is_error: false,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: %{"threads" => []},
+   resourceLinks: nil,
+   tools: nil,
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["content", "isError", "structuredContent"],
+   content_keys: [["text", "type"]],
+   extra_fields: %{}
+ }}
+json tool_error: {:ok,
+ %ExMCP.Response{
+   content: [%{data: nil, type: "text", text: "failed", annotations: nil}],
+   meta: nil,
+   tool_name: "tool_error",
+   request_id: nil,
+   server_info: nil,
+   is_error: true,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: nil,
+   resourceLinks: nil,
+   tools: nil,
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["content", "isError"],
+   content_keys: [["text", "type"]],
+   extra_fields: %{}
+ }}
+json rpc_error: {:error,
+ %ExMCP.Error.ProtocolError{code: -32602, message: "Bad argument", data: nil}}
+json http_error: {:error,
+ %ExMCP.Error.TransportError{
+   transport: :http,
+   reason: {:http_error, 503, "{}"},
+   details: %{message: "Failed to send request: {:http_error, 503, \"{}\"}"}
+ }}
+sse list: {:ok,
+ %ExMCP.Response{
+   content: [],
+   meta: nil,
+   tool_name: nil,
+   request_id: nil,
+   server_info: nil,
+   is_error: false,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: nil,
+   resourceLinks: nil,
+   tools: [
+     %{
+       :name => "t3_thread_list",
+       :description => "List threads",
+       :inputSchema => %{
+         :type => "object",
+         :properties => %{},
+         "properties" => %{},
+         "type" => "object"
+       },
+       "description" => "List threads",
+       "inputSchema" => %{"properties" => %{}, "type" => "object"},
+       "name" => "t3_thread_list"
+     }
+   ],
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["tools"],
+   content_keys: [],
+   extra_fields: %{}
+ }}
+sse call: {:ok,
+ %ExMCP.Response{
+   content: [
+     %{data: nil, type: "text", text: "{\"threads\":[]}", annotations: nil}
+   ],
+   meta: nil,
+   tool_name: "t3_thread_list",
+   request_id: nil,
+   server_info: nil,
+   is_error: false,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: %{"threads" => []},
+   resourceLinks: nil,
+   tools: nil,
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["content", "isError", "structuredContent"],
+   content_keys: [["text", "type"]],
+   extra_fields: %{}
+ }}
+sse tool_error: {:ok,
+ %ExMCP.Response{
+   content: [%{data: nil, type: "text", text: "failed", annotations: nil}],
+   meta: nil,
+   tool_name: "tool_error",
+   request_id: nil,
+   server_info: nil,
+   is_error: true,
+   resultType: nil,
+   ttlMs: nil,
+   cacheScope: nil,
+   structuredOutput: nil,
+   resourceLinks: nil,
+   tools: nil,
+   resources: nil,
+   prompts: nil,
+   messages: nil,
+   roots: nil,
+   resourceTemplates: nil,
+   nextCursor: nil,
+   contents: nil,
+   description: nil,
+   completion: nil,
+   wire_keys: ["content", "isError"],
+   content_keys: [["text", "type"]],
+   extra_fields: %{}
+ }}
+sse rpc_error: {:error,
+ %ExMCP.Error.ProtocolError{code: -32602, message: "Bad argument", data: nil}}
+sse http_error: {:error,
+ %ExMCP.Error.TransportError{
+   transport: :http,
+   reason: {:http_error, 503, "{}"},
+   details: %{message: "Failed to send request: {:http_error, 503, \"{}\"}"}
+ }}

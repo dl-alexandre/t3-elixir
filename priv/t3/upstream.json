@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/pingdotgg/t3code",
+  "ref": "337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17",
+  "captured_at": "2026-11-05",
+  "scope": "HTTP and WebSocket contracts; MCP tools depend on authenticated context"
+}

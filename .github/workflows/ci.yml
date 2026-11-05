@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            elixir: '1.20.5'
+            otp: '29.1.2'
+            primary: true
+          - os: macos-15
+            elixir: '1.20.5'
+            otp: '29.1.2'
+            primary: false
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install Erlang and Elixir
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+          version-type: strict
+
+      - name: Cache dependencies and build outputs
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            deps
+            _build
+          key: mix-${{ runner.os }}-${{ runner.arch }}-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock', 'mix.exs') }}
+
+      - name: Fetch dependencies
+        run: mix deps.get
+
+      # Elixir formatter output can change between releases. Keep one canonical
+      # formatter while compiling and testing against every supported pairing.
+      - name: Check formatting
+        if: matrix.primary
+        run: mix format --check-formatted
+
+      - name: Compile with warnings treated as errors
+        env:
+          MIX_ENV: test
+        run: mix compile --warnings-as-errors
+
+      - name: Run tests with warnings treated as errors
+        env:
+          MIX_ENV: test
+        run: mix test --warnings-as-errors
+
+      - name: Check offline interface inventory
+        if: matrix.primary
+        run: mix t3.interfaces
+
+      - name: Build documentation
+        if: matrix.primary
+        run: mix docs --warnings-as-errors
+
+      - name: Build local Hex archive
+        if: matrix.primary
+        run: mix hex.build

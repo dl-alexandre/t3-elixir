@@ -1,0 +1,108 @@
+json ready: :ok
+json list: {:ok,
+ %{
+   tools: [
+     %ConduitMcp.Client.Tool{
+       server_id: "eval_json",
+       name: "t3_thread_list",
+       title: nil,
+       description: "List threads",
+       input_schema: %{"properties" => %{}, "type" => "object"},
+       output_schema: nil,
+       annotations: nil,
+       execution: nil,
+       fingerprint: "09c7fa39c3e2d921db8d0b8e88a04797e667f818e69e8d6222164c2f068ff979",
+       raw: %{
+         "description" => "List threads",
+         "inputSchema" => %{"properties" => %{}, "type" => "object"},
+         "name" => "t3_thread_list"
+       },
+       meta: %{}
+     }
+   ],
+   next_cursor: nil
+ }}
+json call: {:ok,
+ %ConduitMcp.Client.ToolResult{
+   content: [%{"text" => "{\"threads\":[]}", "type" => "text"}],
+   structured: %{"threads" => []},
+   is_error: false,
+   meta: %{},
+   extra: %{},
+   provenance: nil
+ }}
+json tool_error: {:ok,
+ %ConduitMcp.Client.ToolResult{
+   content: [%{"text" => "failed", "type" => "text"}],
+   structured: nil,
+   is_error: true,
+   meta: %{},
+   extra: %{},
+   provenance: nil
+ }}
+json rpc_error: {:error,
+ %ConduitMcp.Client.Error{
+   kind: :protocol,
+   reason: {:jsonrpc, -32602},
+   data: %{"code" => -32602, "message" => "Bad argument"}
+ }}
+json http_error: {:error,
+ %ConduitMcp.Client.Error{
+   kind: :transport,
+   reason: {:http_status, 503},
+   data: nil
+ }}
+sse ready: :ok
+sse list: {:ok,
+ %{
+   tools: [
+     %ConduitMcp.Client.Tool{
+       server_id: "eval_sse",
+       name: "t3_thread_list",
+       title: nil,
+       description: "List threads",
+       input_schema: %{"properties" => %{}, "type" => "object"},
+       output_schema: nil,
+       annotations: nil,
+       execution: nil,
+       fingerprint: "09c7fa39c3e2d921db8d0b8e88a04797e667f818e69e8d6222164c2f068ff979",
+       raw: %{
+         "description" => "List threads",
+         "inputSchema" => %{"properties" => %{}, "type" => "object"},
+         "name" => "t3_thread_list"
+       },
+       meta: %{}
+     }
+   ],
+   next_cursor: nil
+ }}
+sse call: {:ok,
+ %ConduitMcp.Client.ToolResult{
+   content: [%{"text" => "{\"threads\":[]}", "type" => "text"}],
+   structured: %{"threads" => []},
+   is_error: false,
+   meta: %{},
+   extra: %{},
+   provenance: nil
+ }}
+sse tool_error: {:ok,
+ %ConduitMcp.Client.ToolResult{
+   content: [%{"text" => "failed", "type" => "text"}],
+   structured: nil,
+   is_error: true,
+   meta: %{},
+   extra: %{},
+   provenance: nil
+ }}
+sse rpc_error: {:error,
+ %ConduitMcp.Client.Error{
+   kind: :protocol,
+   reason: {:jsonrpc, -32602},
+   data: %{"code" => -32602, "message" => "Bad argument"}
+ }}
+sse http_error: {:error,
+ %ConduitMcp.Client.Error{
+   kind: :transport,
+   reason: {:http_status, 503},
+   data: nil
+ }}
