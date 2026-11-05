@@ -27,22 +27,30 @@ The action references are pinned to reviewed upstream commits. Version sources:
 [cache](https://github.com/actions/cache), and
 [OTP 29.1.2](https://github.com/erlang/otp/releases/tag/OTP-29.1.2).
 
-The repository is `dl-alexandre/t3-elixir`. GitHub CI runs when its workflow is
-pushed; local validation alone does not imply the remote matrix is green.
+The repository is public at `dl-alexandre/t3-elixir`. Both platform jobs passed
+for commit `6c78657a9317f0a13afa2b8401ee77b4c548b153` in
+[the recorded CI run](https://github.com/dl-alexandre/t3-elixir/actions/runs/42066189074).
 
 ## Recorded local validation
 
 On 2026-11-05, all 67 local tests passed on this Mac with Elixir 1.20.5 /
-OTP 29.1.2 in a fresh build directory; four live tests were excluded. This is
-evidence for that exact local combination, not an executed GitHub matrix result.
+OTP 29.1.2 in a fresh build directory; four live tests were excluded from that
+local suite. The remote matrix result is recorded separately above.
 OTP 27/28 are outside this project's current support target.
 
 The same versions are the local global Mise defaults. Existing shells with
 inherited version-specific PATH entries need a Mise environment refresh.
 
-The opt-in public environment metadata test passed against the running T3 server.
-Three credential-dependent live probes skipped because their credentials were not
-supplied. See [LIVE_TESTING.md](LIVE_TESTING.md) for exact variables and limits.
+All four opt-in live smoke checks passed against T3 Code 0.1.1 on 2026-11-05:
+public environment metadata, authenticated HTTP shell snapshot, authenticated
+WebSocket RPC server configuration, and external OAuth MCP discovery/project
+and thread reads. The native checks ran together (three passed, MCP skipped);
+the OAuth MCP check ran separately after read-only approval (one passed, three
+skipped). The temporary native credential was revoked after validation.
+
+These checks validate read-only integration. Live upload/download, guest-share
+SSE, mutation and media workflows remain unverified. See
+[LIVE_TESTING.md](LIVE_TESTING.md) for exact variables and limits.
 
 ## Before the first publication
 
