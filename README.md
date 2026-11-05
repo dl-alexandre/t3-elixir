@@ -10,6 +10,17 @@ and **16 CLI command families**. Named helpers are backed
 by generic transports for future server additions. [INTERFACES.md](INTERFACES.md)
 lists every operation, its source revision, authentication and coverage limits.
 
+## Documentation
+
+- This README: installation and interface examples.
+- [Authentication](docs/AUTHENTICATION.md): MCP, native credentials, guest cookies and media tickets.
+- [Troubleshooting](docs/TROUBLESHOOTING.md): errors, scopes, lifecycle and stream ACKs.
+- [Interface inventory](INTERFACES.md): every pinned operation and compatibility limits.
+- [Live testing](LIVE_TESTING.md), [contributing](CONTRIBUTING.md) and [release checklist](RELEASE.md).
+
+Generate the searchable API reference with `mix docs` and open `doc/index.html`.
+HexDocs will be published with the first Hex release; it is not live yet.
+
 ## Installation
 
 Before publication, use the repository dependency:
@@ -41,15 +52,21 @@ the project prompt. Credentials stay in memory; the example closes its connectio
 Inside your own tool:
 
 ```elixir
+mcp_url = System.get_env("T3_MCP_URL", "http://127.0.0.1:3773/mcp")
 client = T3.new(url: mcp_url)
 {:ok, client} = T3.OAuth.login(client, open: &IO.puts/1)
 {:ok, client} = T3.connect(client)
 try do
-  {:ok, tools} = T3.discover(client)
-  {:ok, projects_result} = T3.Projects.list(client)
-  {:ok, projects} = T3.Result.data(projects_result)
-  {:ok, result} = T3.Threads.list(client, %{"projectId" => project_id, "limit" => 10})
-  T3.Result.data(result)
+  {:ok, result} = T3.Projects.list(client)
+  {:ok, %{"projects" => projects}} = T3.Result.data(result)
+
+  case projects do
+    [%{"id" => project_id} | _] ->
+      {:ok, result} = T3.Threads.list(client, %{"projectId" => project_id, "limit" => 10})
+      IO.inspect(T3.Result.data(result), label: "Threads in the first project")
+    [] ->
+      IO.puts("Register a project in T3 first.")
+  end
 after
   T3.close(client)
 end
@@ -80,10 +97,14 @@ not exposed to external OAuth clients even with full access.
 ## HTTP JSON
 
 HTTP credentials are configured separately; an MCP OAuth token does not imply
-access to the application HTTP APIs.
+access to the application HTTP APIs. See [native credential setup](docs/AUTHENTICATION.md#native-http-and-effect-rpc)
+for a read-scoped token issued by the T3 host. Later examples use caller-selected
+`thread_id`, `tab_id`, URLs and media/share inputs.
 
 ```elixir
-http = T3.HTTP.new(base_url: environment_origin, token: environment_access_token)
+environment_origin = System.get_env("T3_HTTP_URL", "http://127.0.0.1:3773")
+http = T3.HTTP.new(base_url: environment_origin,
+  token: System.fetch_env!("T3_ENVIRONMENT_TOKEN"))
 {:ok, response} = T3.HTTP.Orchestration.thread_transcript(http, thread_id)
 response.body
 
@@ -113,6 +134,10 @@ try do
     {:t3_rpc, ^id, {:chunk, values}} ->
       IO.inspect(values)
       :ok = T3.RPC.ack(rpc, id)
+    {:t3_rpc, ^id, {:done, _}} -> :ok
+    {:t3_rpc, ^id, {:error, error}} -> IO.puts(Exception.message(error))
+  after
+    5_000 -> IO.puts("No update within five seconds")
   end
   :ok = T3.RPC.unsubscribe(rpc, id)
 after
@@ -165,6 +190,12 @@ try do
     {:t3_web_socket, ^socket, ref, {:binary, jpeg}} ->
       consume_jpeg(jpeg)
       :ok = T3.WebSocket.Routes.preview_ack(socket, ref)
+    {:t3_web_socket, ^socket, ref, {:text, _status}} ->
+      :ok = T3.WebSocket.ack(socket, ref)
+    {:t3_web_socket, ^socket, {:closed, _}} -> :ok
+    {:t3_web_socket, ^socket, {:error, error}} -> IO.puts(Exception.message(error))
+  after
+    5_000 -> IO.puts("No frame within five seconds")
   end
 after
   T3.WebSocket.close(socket)
@@ -237,9 +268,10 @@ Conduit is pinned to `~> 0.11.0`; it includes Plug/Bandit, server-related runtim
 processes and an exact NimbleOptions 1.1.1 dependency. Dependency experiments are
 in `docs/dependency-evaluation.md` and `evaluation/README.md`.
 
-The package archive is local, not published. Before publishing, choose the
-permanent package name, add repository/maintainer metadata, verify real workflows
-with appropriate credentials and authenticate to Hex.
+The package/application name is `t3`, maintained in `dl-alexandre/t3-elixir`.
+The archive is local and has not been published. Publication still requires green
+CI, live workflow validation with appropriate credentials, and Hex authentication;
+see the release checklist.
 
 ## CI, live testing and release readiness
 

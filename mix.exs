@@ -11,7 +11,16 @@ defmodule T3.MixProject do
       elixir: "~> 1.20",
       docs: [
         main: "readme",
-        extras: ["README.md", "INTERFACES.md", "CHANGELOG.md", "LIVE_TESTING.md", "RELEASE.md"]
+        extras: [
+          "README.md",
+          "INTERFACES.md",
+          "CHANGELOG.md",
+          "LIVE_TESTING.md",
+          "RELEASE.md",
+          "CONTRIBUTING.md",
+          "docs/AUTHENTICATION.md",
+          "docs/TROUBLESHOOTING.md"
+        ]
       ],
       description: "Elixir SDK for T3 Code MCP, HTTP, WebSocket RPC and CLI",
       package: [
@@ -23,7 +32,7 @@ defmodule T3.MixProject do
             "https://github.com/pingdotgg/t3code/blob/main/docs/user/outside-agents.md"
         },
         files:
-          ~w(lib priv examples mix.exs README.md INTERFACES.md LIVE_TESTING.md RELEASE.md LICENSE CHANGELOG.md .formatter.exs)
+          ~w(lib priv examples mix.exs README.md INTERFACES.md LIVE_TESTING.md RELEASE.md CONTRIBUTING.md docs/AUTHENTICATION.md docs/TROUBLESHOOTING.md LICENSE CHANGELOG.md .formatter.exs)
       ],
       start_permanent: Mix.env() == :prod,
       elixirc_paths: if(Mix.env() == :test, do: ["lib", "test/support"], else: ["lib"]),

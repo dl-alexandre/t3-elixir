@@ -29,8 +29,16 @@ defmodule T3.CLI.Runner do
     external_opts =
       if client.cwd, do: Keyword.put(external_opts, :cd, client.cwd), else: external_opts
 
-    with {:ok, process} <- External.start_link(command, external_opts),
-         {:ok, os_pid} <- External.os_pid(process) do
+    with {:ok, process} <- External.start_link(command, external_opts) do
+      # os_pid/1 is an optional debugging query: a successful fast command may
+      # already have exited by the time Exile handles it. Keep draining its
+      # stdout and exit notification instead of treating that race as launch failure.
+      os_pid =
+        case External.os_pid(process) do
+          {:ok, pid} -> pid
+          :undefined -> nil
+        end
+
       runner = self()
 
       reader =
@@ -135,6 +143,9 @@ defmodule T3.CLI.Runner do
   def handle_info(_, state), do: {:noreply, state}
 
   @impl true
+  def handle_call(:os_pid, _from, %{os_pid: nil} = state),
+    do: {:reply, {:error, error(:process_exited, "T3 executable already exited")}, state}
+
   def handle_call(:os_pid, _from, state), do: {:reply, {:ok, state.os_pid}, state}
   def handle_call({:write, data}, from, state), do: write_request(state, from, {:write, data})
   def handle_call(:close_stdin, from, state), do: write_request(state, from, :close)

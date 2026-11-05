@@ -2,6 +2,9 @@
 
 ## 0.1.0 — unreleased
 
+- Add publication guides for authentication, troubleshooting and contributing.
+- Validate documentation examples and links; fix fast CLI exit handling found by CI.
+
 - Name the Hex package and OTP application `t3`; use the `t3-elixir` repository.
 
 - Target OTP 29 and Elixir 1.20; pin the project to OTP 29.1.2 / Elixir 1.20.5.

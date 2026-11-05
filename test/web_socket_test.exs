@@ -28,6 +28,8 @@ end
 
 defmodule T3.WebSocketTest do
   use ExUnit.Case, async: true
+  # Network delivery is asynchronous; use a portable deadline rather than the
+  # 100ms default, which is below observed hosted-runner scheduling latency.
   alias T3.{WebSocket, Error}
 
   setup do
@@ -57,10 +59,10 @@ defmodule T3.WebSocketTest do
   } do
     socket = socket(base, max_pending_frames: 1)
     assert :ok = WebSocket.send_text(socket, "literal text")
-    assert_receive {:t3_web_socket, ^socket, first, {:text, "literal text"}}
+    assert_receive {:t3_web_socket, ^socket, first, {:text, "literal text"}}, 1000
     assert :ok = WebSocket.ack(socket, first)
     assert :ok = WebSocket.send_binary(socket, <<0, 255, 10, 20>>)
-    assert_receive {:t3_web_socket, ^socket, second, {:binary, <<0, 255, 10, 20>>}}
+    assert_receive {:t3_web_socket, ^socket, second, {:binary, <<0, 255, 10, 20>>}}, 1000
     assert :ok = WebSocket.ack(socket, second)
     assert {:error, %Error{kind: :protocol}} = WebSocket.ack(socket, second)
     assert :ok = WebSocket.close(socket)

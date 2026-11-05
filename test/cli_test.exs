@@ -35,6 +35,16 @@ defmodule T3.CLITest do
     refute File.exists?(Path.join(cli.cwd, "sentinel"))
   end
 
+  @tag capture_log: true
+  test "fast commands still deliver exit and output after their OS pid disappears" do
+    cli = CLI.new(executable: System.find_executable("true"))
+    # A rapid exit can precede the optional OS-pid query. Exercise the real
+    # executable repeatedly to cover both orders without mocking Exile internals.
+    for _ <- 1..300 do
+      assert {:ok, %{exit_status: 0, output: ""}} = CLI.run(cli, [])
+    end
+  end
+
   test "exit status, merged stderr, environment and redaction", %{cli: cli} do
     assert {:error, %T3.Error{kind: :cli, code: 7, details: %{output: "failure details"}}} =
              CLI.run(cli, ["fail"])

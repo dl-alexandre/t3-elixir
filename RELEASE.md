@@ -32,7 +32,7 @@ pushed; local validation alone does not imply the remote matrix is green.
 
 ## Recorded local validation
 
-On 2026-11-05, all 64 fixture tests passed on this Mac with Elixir 1.20.5 /
+On 2026-11-05, all 67 local tests passed on this Mac with Elixir 1.20.5 /
 OTP 29.1.2 in a fresh build directory; four live tests were excluded. This is
 evidence for that exact local combination, not an executed GitHub matrix result.
 OTP 27/28 are outside this project's current support target.
@@ -85,6 +85,6 @@ mix hex.build
 ```
 
 `mix hex.build` creates a local archive and never publishes it. The release
-workflow intentionally leaves repository creation, credential entry and final
-publication outside automation. After the actual repository and package identity
-exist, update this document and the metadata together.
+workflow leaves credential entry and final publication outside automation. The
+repository and package identity are configured. Verify CI and live integration
+results before the separate decision to publish.

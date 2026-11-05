@@ -23,8 +23,15 @@ defmodule T3.RPC do
       {:ok, rpc} = T3.RPC.start_link(url: "ws://127.0.0.1:3773/ws", token: token)
       {:ok, config} = T3.RPC.call(rpc, "server.getConfig", %{})
       {:ok, subscription} = T3.RPC.subscribe(rpc, "orchestration.subscribeShell", %{})
-      # receive {:t3_rpc, subscription, {:chunk, values}}, process values, then:
-      :ok = T3.RPC.ack(rpc, subscription)
+      receive do
+        {:t3_rpc, ^subscription, {:chunk, values}} ->
+          IO.inspect(values)
+          :ok = T3.RPC.ack(rpc, subscription)
+        {:t3_rpc, ^subscription, {:done, _}} -> :ok
+        {:t3_rpc, ^subscription, {:error, error}} -> IO.puts(Exception.message(error))
+      after
+        5_000 -> :ok
+      end
       :ok = T3.RPC.unsubscribe(rpc, subscription)
       :ok = T3.RPC.close(rpc)
 

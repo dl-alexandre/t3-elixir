@@ -96,7 +96,7 @@ defmodule T3.CLI do
   @doc "Close stdin while continuing to read output (EOF for commands reading `-`)."
   def close_stdin(pid), do: GenServer.call(pid, :close_stdin, :infinity)
 
-  @doc "Return the directly invoked OS process ID for lifecycle inspection."
+  @doc "Return the OS process ID, or an error with code :process_exited if it already exited."
   def os_pid(pid), do: GenServer.call(pid, :os_pid)
 
   @doc "Stop a streaming invocation."
