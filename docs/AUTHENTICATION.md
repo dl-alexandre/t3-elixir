@@ -59,7 +59,7 @@ http = T3.HTTP.new(
 {:ok, response} = T3.HTTP.Orchestration.shell_snapshot(http)
 ```
 
-Obtain a single-use RPC ticket through the native HTTP client:
+Obtain a route-bound RPC ticket through the native HTTP client:
 
 ```elixir
 {:ok, response} = T3.HTTP.Auth.web_socket_ticket_for(http, "rpc")
@@ -117,10 +117,13 @@ A normal supervisor shutdown attempts to revoke owned sessions; forced OS kills
 can leave them until their TTL expires. A 24-hour TTL bounds that exposure while
 avoiding interactive service boots.
 
-Set `ticket: true` on the provider to use single-use RPC tickets. Each request for
-connection options obtains a fresh `"rpc"` ticket over local HTTP; the underlying
-environment token is still cached. Never reuse a ticket after a failed handshake.
-The provider only accepts loopback HTTP(S) origins, including IPv6 `[::1]`.
+Set `ticket: true` on the provider to use RPC bearer tickets. By default each
+request for connection options obtains a fresh `"rpc"` ticket over local HTTP;
+the underlying environment token is still cached. Ticket reuse is optional,
+as described below. The provider only accepts loopback HTTP(S) origins,
+including IPv6 `[::1]`. A remote origin fails before any CLI execution with
+`%T3.Error{kind: :configuration, code: :non_local_origin}` and a message pointing
+to environment-token authentication.
 Tokens stay in memory and are redacted in process status. Returned RPC options
 contain credentials and must not be logged or included in crash metadata.
 
@@ -128,6 +131,80 @@ For one-off provisioning, `T3.LocalAuth.issue/1` returns an opaque credential;
 the caller owns its lifetime and must use `T3.LocalAuth.revoke/2` with the same
 CLI/data-directory options. For a service, the supervised provider is preferred.
 No runtime dependency on Python, a shell script or an OAuth callback is needed.
+
+## Remote and multi-tenant services
+
+The supported remote path is an environment credential issued for the target
+T3 installation, delivered through your secret manager. LocalAuth deliberately
+does not mint local CLI credentials and send them to a remote host. Use HTTPS/WSS
+outside loopback; do not substitute an MCP OAuth token, whose audience differs.
+
+```elixir
+connect = fn ->
+  # Read on each reconnect so your deployment can rotate the environment token.
+  token = System.fetch_env!("T3_ENVIRONMENT_TOKEN")
+  {:ok, [url: "wss://t3.example.com/ws", token: token]}
+end
+
+{:ok, rpc_options} = connect.()
+{:ok, rpc} = T3.RPC.start_link(rpc_options)
+:ok = T3.RPC.close(rpc)
+```
+
+Pass `connect` to `T3.RPC.Reader` for subscription recovery. HTTP uses the same
+native environment credential with `T3.HTTP.new(base_url: ..., token: token)`.
+For multi-tenant services, resolve the authorized credential and target origin
+per tenant, and use separate readers/credential callbacks. Never share a cached
+ticket or credential across environments or tenants. Provision least-privilege
+scopes and rotate/revoke through the issuing environment's authorized flow.
+
+A bearer environment token can authenticate multiple RPC connections directly
+until its session expires or is revoked, avoiding the ticket-mint round trip.
+`T3.LocalAuth` defaults to this mode (`ticket: false`) for localhost services.
+Bearer credentials are more broadly usable than route-bound tickets: choose the
+mode deliberately and retain credentials only in trusted server memory.
+
+## Optional RPC bearer-ticket cache
+
+The earlier documentation called all RPC tickets single-use. The pinned server
+actually signs reusable bearer ticket claims with a default five-minute expiry
+and verifies the underlying session on every handshake. A live read-only probe
+against T3 Code 0.1.1 authenticated two consecutive RPC connections with the same
+ticket, then confirmed rejection after parent-session revocation. No credentials
+or private responses were persisted, and the temporary session was revoked.
+
+Local services opening many short connections can opt into a shorter cache:
+
+```elixir
+children = [
+  {T3.LocalAuth,
+   name: MyApp.T3Auth,
+   base_url: "http://127.0.0.1:3773",
+   ticket: true,
+   ticket_cache_ttl: 30_000}
+]
+```
+
+`ticket_cache_ttl` is milliseconds and defaults to zero, so the normal board path
+still mints a fresh ticket per attempt. Cache lifetime is bounded by the caller
+TTL, the server-provided `expiresAt`, and the cached environment session expiry.
+The client TTL also uses a monotonic deadline. Missing/invalid ticket expiry
+prevents caching. Session rotation or `T3.LocalAuth.invalidate/1` clears cached
+tickets; invalidation revokes the parent session and therefore all of its tickets.
+There is no independent per-ticket revoke endpoint in the pinned contract. An
+external parent-session revocation is enforced by T3 even while a ticket remains
+in local memory; explicitly invalidate the provider before seeking a replacement.
+
+This cache is for CLI-issued bearer credentials. DPoP-bound RPC tickets require
+a newly signed DPoP proof for every handshake: proof `jti` reuse is rejected even
+when the ticket itself is still valid. Do not cache/replay a proof. LocalAuth does
+not generate DPoP proofs or extend any server expiry/revocation rules. Ticket TTL
+limits future handshakes; do not treat client cache eviction as server revocation
+of an already authenticated socket.
+
+The verified implementation is pinned in
+[SessionStore](https://github.com/pingdotgg/t3code/blob/337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17/apps/server/src/auth/SessionStore.ts)
+and [EnvironmentAuth](https://github.com/pingdotgg/t3code/blob/337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17/apps/server/src/auth/EnvironmentAuth.ts).
 
 ## Media and device streams
 

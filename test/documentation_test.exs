@@ -10,6 +10,7 @@ defmodule T3.DocumentationTest do
     "docs/AUTHENTICATION.md",
     "docs/BOARD_READER.md",
     "docs/BOARD_EVENTS.md",
+    "docs/STREAM_CONTRACT.md",
     "docs/TROUBLESHOOTING.md"
   ]
 

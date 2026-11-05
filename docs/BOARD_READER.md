@@ -107,8 +107,8 @@ detail your board needs. See [actual payload shapes](BOARD_EVENTS.md).
 A disconnect, stream completion, or failed health read closes the old connection
 and re-creates all configured subscriptions with exponential backoff and jitter.
 The credential callback runs once per attempt. LocalAuth caches the underlying
-session, renews near expiry when asked for options, and creates a fresh single-use
-RPC ticket for each attempt. It revokes sessions it replaces and attempts to
+session, renews near expiry when asked for options, and creates a fresh
+RPC bearer ticket for each attempt by default. It revokes sessions it replaces and attempts to
 revoke its session on orderly shutdown. Abrupt termination still leaves the TTL
 as the lifetime bound. Choose `:base_dir` and `:cli` explicitly when the service
 account has different home/PATH settings. Never log the connection options.
@@ -154,6 +154,52 @@ end
 
 For continuous consumption, receive in a loop and retain the cache between
 chunks. ACK each consumed chunk; do not ACK before processing or leave chunks
-unacknowledged while awaiting more data. Never reuse a single-use ticket on a
-new connection. Low-level subscriptions default to an infinite stream deadline;
+unacknowledged while awaiting more data. Reusable bearer tickets may be cached explicitly until expiry; never reuse a
+DPoP proof. See [ticket caching](AUTHENTICATION.md). Low-level subscriptions default to an infinite stream deadline;
 unary reads retain their finite call deadline.
+
+## Optional bounded asynchronous work
+
+The queue and busy-admission protocol require the unreleased 0.3.0 checkout.
+
+The default synchronous callback ACKs after processing. For best-effort work
+that can be reconciled from a later snapshot, put a `T3.RPC.WorkQueue` before the
+reader in your supervisor. `MyApp.WorkErrors` must be an existing registered
+process that handles `{:t3_work_queue, queue, {:failed, event}}` notifications:
+
+```elixir
+queue_child = {T3.RPC.WorkQueue,
+  name: MyApp.T3Work,
+  owner: MyApp.WorkErrors,
+  capacity: 32,
+  work_timeout: 30_000,
+  work: fn {:chunk, _key, values} ->
+    MyApp.SlowConsumer.consume(values)
+    :ok
+  end}
+
+consume = fn
+  {:chunk, _, _} = event -> T3.RPC.WorkQueue.enqueue(MyApp.T3Work, event)
+  {:snapshot, _key, value} -> MyApp.SlowConsumer.consume_snapshot(value); :ok
+  {:status, _} -> :ok
+end
+```
+
+Set this callback on the reader. Admission is non-blocking; a full queue returns
+`{:error, :busy}`. The reader retains the chunk without ACK and retries admission
+while continuing to handle health/status messages. Queue capacity includes the
+single active worker and all waiting work. Each stream has at most one deferred
+chunk. Order is preserved within a stream and by queue admission, not globally
+across independent streams.
+
+Once admitted, the reader ACKs and may checkpoint **before execution**. The
+queue is bounded memory, not durable: a queue restart loses accepted work; worker
+failure/timeout notifies its owner and continues without automatic retries.
+Slow work should have idempotent effects and reconciliation. For audit/billing,
+keep the synchronous callback and durably enqueue/process data and checkpoint
+transactionally before returning `:ok`. Catch-up/status callbacks still need to
+return promptly. Do not enable durable cursor persistence with this memory queue
+and assume processing is durable.
+
+See [resume cursors, ordering and full inventory](STREAM_CONTRACT.md) for the
+supported `afterSequence`, completeness flags and replay limitations.

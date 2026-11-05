@@ -18,8 +18,12 @@ defmodule T3.LocalAuth do
   `connection_options/1` returns RPC options and reuses the issued session until
   it is within `:renew_before` milliseconds of expiry (default 60 seconds).
   Renewal happens when options are requested, not while an existing socket is
-  open. Configure `ticket: true` to mint a fresh single-use RPC ticket each time
+  open. Configure `ticket: true` to mint a fresh RPC bearer ticket each time
   options are requested; the underlying environment session remains cached.
+  Set `ticket_cache_ttl: milliseconds` to opt into ticket reuse. Its lifetime is
+  bounded by this TTL, the server ticket expiry and the underlying session expiry.
+  The default zero disables ticket caching. CLI-issued credentials are bearer
+  credentials; DPoP-bound credentials require a new proof for every handshake.
   Reconnect readers should call the function for every connection attempt.
 
   Defaults are `ttl: "24h"`, `scopes: ["orchestration:read"]` and
@@ -93,15 +97,27 @@ defmodule T3.LocalAuth do
          true <-
            is_integer(Keyword.get(opts, :renew_before, 60_000)) and
              Keyword.get(opts, :renew_before, 60_000) >= 0,
-         true <- is_boolean(Keyword.get(opts, :ticket, false)) do
-      {:ok, %{opts: opts, origin: origin, rpc_url: rpc_url, credential: nil, retired: []}}
+         true <- is_boolean(Keyword.get(opts, :ticket, false)),
+         true <-
+           is_integer(Keyword.get(opts, :ticket_cache_ttl, 0)) and
+             Keyword.get(opts, :ticket_cache_ttl, 0) >= 0,
+         true <-
+           Keyword.get(opts, :ticket_cache_ttl, 0) == 0 or
+             Keyword.get(opts, :ticket, false) do
+      {:ok,
+       %{opts: opts, origin: origin, rpc_url: rpc_url, credential: nil, ticket: nil, retired: []}}
     else
-      _ ->
+      {:error, :non_local_origin} ->
         {:error,
          %Error{
            kind: :configuration,
-           message: "Invalid local auth options or non-loopback origin"
+           code: :non_local_origin,
+           message:
+             "T3.LocalAuth requires a loopback origin; use an authorized environment token for remote services"
          }}
+
+      _ ->
+        {:error, %Error{kind: :configuration, message: "Invalid local auth options or origin"}}
     end
   end
 
@@ -111,7 +127,8 @@ defmodule T3.LocalAuth do
 
     case ensure_credential(state) do
       {:ok, state} ->
-        {:reply, connect_options(state), state}
+        {result, state} = connect_options(state)
+        {:reply, result, state}
 
       {:error, error} ->
         {:reply, {:error, error}, state}
@@ -120,7 +137,7 @@ defmodule T3.LocalAuth do
 
   def handle_call(:invalidate, _from, state) do
     state = retire(state, state.credential)
-    {:reply, :ok, cleanup_retired(%{state | credential: nil})}
+    {:reply, :ok, cleanup_retired(%{state | credential: nil, ticket: nil})}
   end
 
   @impl true
@@ -151,6 +168,7 @@ defmodule T3.LocalAuth do
            state
            |> retire(state.credential)
            |> Map.put(:credential, credential)
+           |> Map.put(:ticket, nil)
            |> cleanup_retired()}
 
         {:error, error} ->
@@ -160,22 +178,59 @@ defmodule T3.LocalAuth do
   end
 
   defp connect_options(state) do
-    token = Secret.expose(state.credential.token)
-
     if Keyword.get(state.opts, :ticket, false) do
+      ticket_options(state)
+    else
+      token = Secret.expose(state.credential.token)
+      {{:ok, [url: state.rpc_url, token: token]}, state}
+    end
+  end
+
+  defp ticket_options(state) do
+    now = System.system_time(:millisecond)
+
+    if not is_nil(state.ticket) and state.ticket.until > now and
+         state.ticket.deadline > System.monotonic_time(:millisecond) do
+      {{:ok, [url: state.rpc_url, ticket: Secret.expose(state.ticket.value)]}, state}
+    else
+      token = Secret.expose(state.credential.token)
       http = T3.HTTP.new(base_url: state.origin, token: token)
 
       case T3.HTTP.Auth.web_socket_ticket_for(http, "rpc") do
-        {:ok, %{body: %{"ticket" => ticket}}} when is_binary(ticket) and ticket != "" ->
-          {:ok, [url: state.rpc_url, ticket: ticket]}
+        {:ok, %{body: %{"ticket" => ticket} = body}} when is_binary(ticket) and ticket != "" ->
+          cached = cache_ticket(ticket, body["expiresAt"], state)
+          {{:ok, [url: state.rpc_url, ticket: ticket]}, %{state | ticket: cached}}
 
         _ ->
-          error(:ticket_failed, "Cannot obtain local T3 RPC ticket")
+          {error(:ticket_failed, "Cannot obtain local T3 RPC ticket"), %{state | ticket: nil}}
       end
-    else
-      {:ok, [url: state.rpc_url, token: token]}
     end
   end
+
+  defp cache_ticket(ticket, expiry, state) when is_binary(expiry) do
+    ttl = Keyword.get(state.opts, :ticket_cache_ttl, 0)
+
+    with true <- ttl > 0,
+         {:ok, expires_at, _} <- DateTime.from_iso8601(expiry) do
+      until =
+        Enum.min([
+          System.system_time(:millisecond) + ttl,
+          DateTime.to_unix(expires_at, :millisecond),
+          DateTime.to_unix(state.credential.expires_at, :millisecond)
+        ])
+
+      %{
+        value: Secret.new(ticket),
+        until: until,
+        deadline:
+          System.monotonic_time(:millisecond) + max(until - System.system_time(:millisecond), 0)
+      }
+    else
+      _ -> nil
+    end
+  end
+
+  defp cache_ticket(_, _, _), do: nil
 
   defp retire(state, nil), do: state
   defp retire(state, credential), do: %{state | retired: [credential | state.retired]}
@@ -244,13 +299,18 @@ defmodule T3.LocalAuth do
   defp local_urls(origin) when is_binary(origin) do
     uri = URI.parse(origin)
 
-    if uri.scheme in ["http", "https"] and uri.host in ["localhost", "127.0.0.1", "::1"] and
-         uri.path in [nil, "", "/"] and is_nil(uri.userinfo) and is_nil(uri.query) and
-         is_nil(uri.fragment) do
-      rpc = %{uri | scheme: if(uri.scheme == "https", do: "wss", else: "ws"), path: "/ws"}
-      {:ok, String.trim_trailing(origin, "/"), URI.to_string(rpc)}
-    else
-      :error
+    cond do
+      is_binary(uri.host) and uri.host not in ["localhost", "127.0.0.1", "::1"] ->
+        {:error, :non_local_origin}
+
+      uri.scheme in ["http", "https"] and uri.host in ["localhost", "127.0.0.1", "::1"] and
+        uri.path in [nil, "", "/"] and is_nil(uri.userinfo) and is_nil(uri.query) and
+          is_nil(uri.fragment) ->
+        rpc = %{uri | scheme: if(uri.scheme == "https", do: "wss", else: "ws"), path: "/ws"}
+        {:ok, String.trim_trailing(origin, "/"), URI.to_string(rpc)}
+
+      true ->
+        :error
     end
   end
 

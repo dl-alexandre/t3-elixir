@@ -17,6 +17,13 @@ defmodule T3.ReaderFixture.Socket do
           "exit" => %{"_tag" => "Success", "value" => %{"threads" => []}}
         })
 
+      %{"_tag" => "Request", "tag" => "orchestration.subscribeShell", "id" => id} ->
+        push(owner, %{
+          "_tag" => "Chunk",
+          "requestId" => id,
+          "values" => [%{"kind" => "snapshot", "snapshot" => %{"snapshotSequence" => 12}}]
+        })
+
       %{"_tag" => "Request", "tag" => "watch", "id" => id} ->
         push(owner, %{"_tag" => "Chunk", "requestId" => id, "values" => [%{"kind" => "snapshot"}]})
 
@@ -165,6 +172,111 @@ defmodule T3.RPC.ReaderTest do
     assert_receive {:reader_socket, replacement}, 1000
     refute replacement == socket
     assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
+  end
+
+  test "commits consumed cursors and resumes without advancing on failed admission", %{url: url} do
+    owner = self()
+
+    callbacks = fn
+      {:chunk, _, _} ->
+        send(owner, {:consuming, self()})
+
+        receive do
+          :consumed -> :ok
+        end
+
+      _ ->
+        :ok
+    end
+
+    options =
+      opts(url, owner, callbacks)
+      |> Keyword.put(:streams, [
+        %{
+          key: :shell,
+          method: "orchestration.subscribeShell",
+          resume: true,
+          payload: %{"requestCompletionMarker" => true, "omitOlderSettled" => false}
+        }
+      ])
+      |> Keyword.put(:load_cursor, fn :shell -> 7 end)
+      |> Keyword.put(:save_cursor, fn key, sequence ->
+        send(owner, {:saved, key, sequence})
+        :ok
+      end)
+
+    reader = start_supervised!({T3.RPC.Reader, options})
+    assert_receive {:reader_socket, socket}, 1000
+
+    assert_receive {:reader_wire, ^socket,
+                    %{"tag" => "orchestration.subscribeShell", "payload" => payload}},
+                   1000
+
+    assert payload == %{
+             "afterSequence" => 7,
+             "requestCompletionMarker" => true,
+             "omitOlderSettled" => false
+           }
+
+    assert_receive {:consuming, ^reader}, 1000
+    refute_receive {:saved, _, _}, 20
+    send(reader, :consumed)
+    assert_receive {:saved, :shell, 12}, 1000
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
+    assert T3.RPC.Reader.cursors(reader) == %{shell: 12}
+    send(socket, :disconnect)
+    assert_receive {:reader_socket, replacement}, 1000
+
+    assert_receive {:reader_wire, ^replacement,
+                    %{
+                      "tag" => "orchestration.subscribeShell",
+                      "payload" => %{"afterSequence" => 12}
+                    }},
+                   1000
+
+    assert_receive {:consuming, ^reader}, 1000
+    send(reader, :consumed)
+  end
+
+  test "a full work queue defers ACK while the reader stays responsive", %{url: url} do
+    owner = self()
+
+    queue =
+      start_supervised!(
+        {T3.RPC.WorkQueue,
+         owner: self(),
+         capacity: 1,
+         work: fn item ->
+           send(owner, {:working, self(), item})
+
+           receive do
+             :finish -> :ok
+           end
+         end}
+      )
+
+    :ok = T3.RPC.WorkQueue.enqueue(queue, :preexisting)
+    assert_receive {:working, first, :preexisting}, 1000
+
+    callback = fn
+      {:chunk, _, _} = event ->
+        send(owner, :admission_attempt)
+        T3.RPC.WorkQueue.enqueue(queue, event)
+
+      _ ->
+        :ok
+    end
+
+    options = opts(url, owner, callback) |> Keyword.put(:consumer_retry_interval, 10)
+    reader = start_supervised!({T3.RPC.Reader, options})
+    assert_receive {:reader_socket, socket}, 1000
+    assert_receive :admission_attempt, 1000
+    assert T3.RPC.Reader.status(reader) == :connected
+    refute_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 20
+    send(first, :finish)
+    assert_receive {:working, second, {:chunk, :shell, [_]}}, 1000
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
+    send(second, :finish)
   end
 
   test "supervisor shutdown closes the owned socket", %{url: url} do

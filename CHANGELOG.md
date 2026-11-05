@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0 — unreleased
+
+- Add opt-in stream resume checkpoints using supported `afterSequence` inputs,
+  with load/save hooks and cursor helpers that ignore enrichment high-waters.
+- Add bounded asynchronous work admission with deferred ACK/backpressure.
+- Add opt-in reusable bearer RPC ticket caching bounded by server/session expiry.
+- Clarify remote environment credentials, sequence ordering and full inventory.
+- Correct ticket documentation: bearer tickets are reusable; DPoP proofs are not.
+
 ## 0.2.0 — 2026-11-05
 
 - Add supervised RPC readers with reconnect, re-subscription, catch-up reads,

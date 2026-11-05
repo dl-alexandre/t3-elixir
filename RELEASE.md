@@ -1,10 +1,29 @@
 # Release readiness
 
-The SDK builds a local `t3-0.2.0.tar` archive for the `t3` release on Hex.
+The SDK builds a local `t3-0.3.0.tar` archive for the `t3` release on Hex.
 The release owner is `dl-alexandre`. Guest sharing remains outside the validated
 0.1.0 release scope by the maintainer's decision.
 The CI workflow builds and tests only: it contains no publishing step, account
 credentials, T3 tokens or live-environment configuration.
+
+## Resume and bounded work validation (0.3.0, unpublished)
+
+All 96 local tests passed (six opt-in live tests excluded), including cursor
+checkpoint/ACK ordering, busy queue admission, worker ordering/failure/timeout,
+and ticket cache TTL/invalidation. Live read-only probes confirmed shell/thread
+`afterSequence` resume, completion markers, full-active-shell omission options,
+bearer ticket reuse and rejection after parent revocation. A supervised Reader
+resumed its consumed sequence with a cached ticket after a forced disconnect.
+Temporary sessions were revoked. The 0.3.0 archive also compiled with fresh
+dependencies and native code in an isolated production build; Cursor, WorkQueue,
+Reader, LocalAuth and the stream-contract guide were present.
+
+This corrects the earlier assumption that all RPC tickets are single-use.
+Bearer tickets are reusable until server/parent expiry; DPoP proofs retain their
+anti-replay requirement. Ticket caching remains opt-in and disabled by default.
+See [stream contracts](docs/STREAM_CONTRACT.md) and
+[authentication](docs/AUTHENTICATION.md). No durable audit stream or generic
+cross-stream total ordering is claimed. This version is not yet published.
 
 ## Board reader validation (0.2.0)
 
@@ -100,7 +119,7 @@ CI also passed for commit `197c5d3f1730a2a46855d0d22ea28b57b2aaed1c` in
 
 ## Before publishing a release
 
-1. The chosen Hex package and OTP application name are `t3`, version `0.2.0`.
+1. The chosen Hex package and OTP application name are `t3`, next version `0.3.0`.
    Recheck name availability before first publication; a lookup does not reserve it.
 2. The SDK repository is `https://github.com/dl-alexandre/t3-elixir`. Source and
    homepage links and GitHub maintainer identity are configured in `mix.exs`.
