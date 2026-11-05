@@ -19,18 +19,18 @@ lists every operation, its source revision, authentication and coverage limits.
 - [Live testing](LIVE_TESTING.md), [contributing](CONTRIBUTING.md) and [release checklist](RELEASE.md).
 
 Generate the searchable API reference with `mix docs` and open `doc/index.html`.
-HexDocs will be published with the first Hex release; it is not live yet.
+The published API reference is available on [HexDocs](https://hexdocs.pm/t3/0.1.0).
 
 ## Installation
 
-Before publication, use the repository dependency:
+Add the Hex dependency:
 
 ```elixir
-{:t3, github: "dl-alexandre/t3-elixir"}
+{:t3, "~> 0.1.0"}
 ```
 
-After the first Hex release, use `{:t3, "~> 0.1.0"}`. The package has not yet
-been published to Hex. Local development can use `{:t3, path: "/path/to/t3-elixir"}`.
+For a Git checkout, use `{:t3, github: "dl-alexandre/t3-elixir", tag: "v0.1.0"}`.
+Local development can use `{:t3, path: "/path/to/t3-elixir"}`.
 
 Dependencies handle the hard parts: ConduitMCP for MCP/OAuth, Finch for HTTP,
 Mint.WebSocket for WebSocket framing, Multipart for uploads, Exile for subprocess IO/lifecycle, and ExDoc

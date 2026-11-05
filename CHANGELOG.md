@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — unreleased
+## 0.1.0 — 2026-11-05
 
 - Add publication guides for authentication, troubleshooting and contributing.
 - Validate documentation examples and links; fix fast CLI exit handling found by CI.

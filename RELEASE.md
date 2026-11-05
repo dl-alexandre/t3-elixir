@@ -1,6 +1,8 @@
 # Release readiness
 
-The SDK builds a local `t3-0.1.0.tar` archive. It is not published to Hex.
+The SDK builds a local `t3-0.1.0.tar` archive for publication as `t3` on Hex.
+The release owner is `dl-alexandre`. Guest sharing remains outside the validated
+0.1.0 release scope by the maintainer's decision.
 The CI workflow builds and tests only: it contains no publishing step, account
 credentials, T3 tokens or live-environment configuration.
 
