@@ -48,7 +48,7 @@ jobs:
         with:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
-          version-type: strict
+          version-type: loose
 
       - name: Cache dependencies and build outputs
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
