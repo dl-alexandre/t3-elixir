@@ -14,6 +14,10 @@ defmodule T3.HTTP.Connect do
   def unlink(client, opts \\ []), do: T3.HTTP.call(client, :connect_unlink, opts)
   @doc "POST `/api/connect/preferences`. Body encoding: json."
   def preferences(client, opts \\ []), do: T3.HTTP.call(client, :connect_preferences, opts)
+  @doc "POST `/api/connect/live-activity-preference`. Body encoding: json."
+  def live_activity_preference(client, opts \\ []),
+    do: T3.HTTP.call(client, :connect_live_activity_preference, opts)
+
   @doc "POST `/api/t3-connect/health`. Body encoding: json."
   def health(client, opts \\ []), do: T3.HTTP.call(client, :connect_health, opts)
   @doc "POST `/api/t3-connect/mint-credential`. Body encoding: json."

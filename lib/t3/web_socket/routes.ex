@@ -15,7 +15,7 @@ defmodule T3.WebSocket.Routes do
   `simulator/2` and `emulator/2` require orchestration operate scope; discovery
   requires read scope. Preview controls additionally require preview operate scope.
   """
-  @source_ref "337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17"
+  @source_ref "d8a52dda31d8e2fe65b183cc97d1e4457d9c2396"
   @routes [
     %{
       name: :preview,

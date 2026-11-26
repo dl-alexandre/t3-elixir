@@ -32,4 +32,4 @@ A passing local suite does not establish live compatibility with every T3 versio
 
 Open a pull request describing the concrete behavior change and relevant test
 results. CI checks Linux and macOS on OTP 29. Publishing to Hex is manual and
-requires a separate maintainer decision; see [RELEASE.md](RELEASE.md).
+requires a separate maintainer decision; see [RELEASE.md](https://github.com/dl-alexandre/t3-elixir/blob/main/RELEASE.md).

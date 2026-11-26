@@ -12,9 +12,11 @@ defmodule T3.OAuth do
     @moduledoc "Private pending OAuth authorization."
     @derive {Inspect, only: [:authorization_url]}
     defstruct [:authorization_url, :config, :pending]
+    @type t :: %__MODULE__{authorization_url: binary(), config: keyword(), pending: term()}
   end
 
   @doc "Run a sign-in with a temporary loopback callback. Requires an :open URL callback."
+  @spec login(T3.Client.t(), keyword()) :: {:ok, T3.Client.t()} | {:error, Error.t()}
   def login(client, opts) do
     config = config(client, opts)
 
@@ -34,6 +36,7 @@ defmodule T3.OAuth do
   end
 
   @doc "Begin a sign-in for an application serving its own :redirect_uri."
+  @spec begin(T3.Client.t(), keyword()) :: {:ok, Flow.t()} | {:error, Error.t()}
   def begin(client, opts) do
     config =
       config(client, opts) |> Keyword.put(:redirect_uri, Keyword.fetch!(opts, :redirect_uri))
@@ -48,6 +51,7 @@ defmodule T3.OAuth do
   end
 
   @doc "Validate a complete callback URL and exchange its code for secret-wrapped tokens."
+  @spec complete(Flow.t(), binary()) :: {:ok, term()} | {:error, Error.t()}
   def complete(%Flow{} = flow, callback_url) do
     uri = URI.parse(callback_url)
 

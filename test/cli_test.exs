@@ -35,6 +35,36 @@ defmodule T3.CLITest do
     refute File.exists?(Path.join(cli.cwd, "sentinel"))
   end
 
+  test "uses T3CODE_CLI_PATH when the executable option is defaulted", %{cli: cli} do
+    previous = System.get_env("T3CODE_CLI_PATH")
+    System.put_env("T3CODE_CLI_PATH", cli.executable)
+
+    try do
+      assert CLI.new().executable == cli.executable
+      assert CLI.new(executable: "t3").executable == "t3"
+      assert CLI.new(executable: cli.executable).executable == cli.executable
+    after
+      if previous,
+        do: System.put_env("T3CODE_CLI_PATH", previous),
+        else: System.delete_env("T3CODE_CLI_PATH")
+    end
+  end
+
+  test "CLI telemetry records a run without arguments or output", %{cli: cli} do
+    id = {__MODULE__, self(), make_ref()}
+    events = [[:t3, :cli, :run, :start], [:t3, :cli, :run, :stop]]
+    :ok = :telemetry.attach_many(id, events, &T3.TelemetryTestHandler.handle/4, self())
+
+    try do
+      assert {:ok, _} = CLI.run(cli, ["hello-secret"])
+      assert_receive {:telemetry_event, [:t3, :cli, :run, :start], _, %{}}
+      assert_receive {:telemetry_event, [:t3, :cli, :run, :stop], _, %{outcome: :ok} = metadata}
+      refute inspect(metadata) =~ "hello-secret"
+    after
+      :telemetry.detach(id)
+    end
+  end
+
   @tag capture_log: true
   test "fast commands still deliver exit and output after their OS pid disappears" do
     cli = CLI.new(executable: System.find_executable("true"))

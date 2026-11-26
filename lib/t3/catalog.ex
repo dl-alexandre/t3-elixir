@@ -1,16 +1,59 @@
 defmodule T3.Catalog do
   @moduledoc """
-  Versioned inventory of T3 MCP helpers, including context-only operations.
+  Versioned inventory of all known T3 MCP helpers, including context-only operations.
 
-  The inventory is the union of 66 tools advertised in the development session and
-  five additional upstream definitions at `337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17`.
-  It is not a claim that an outside OAuth client can invoke all tools. Use
+  The pinned upstream revision defines 93 tools. It is not a claim that an outside
+  OAuth client can invoke all tools. Use
   `discover/1` to inspect the authenticated server and `compare/1` to find
   version differences. Every canonical function is available in `T3.Tools`.
   Input arguments retain T3's string keys; server discovery supplies input schemas.
   """
-  @upstream_ref "337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17"
+  @upstream_ref "d8a52dda31d8e2fe65b183cc97d1e4457d9c2396"
   @tools [
+    %{
+      name: "ci_logs",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :logs,
+      canonical_function: :ci_logs,
+      advertised_in_session: false,
+      description: "Read the tail of a PR's failing check logs, or one named check's.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "ci_rerun",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :rerun_checks,
+      canonical_function: :ci_rerun,
+      advertised_in_session: false,
+      description: "Re-run a PR's failing checks, or one named check.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "comment_on_issue",
+      category: :issues,
+      module: T3.Issues,
+      function: :comment,
+      canonical_function: :comment_on_issue,
+      advertised_in_session: false,
+      description: "Post a comment on an issue.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    %{
+      name: "create_issue",
+      category: :issues,
+      module: T3.Issues,
+      function: :create,
+      canonical_function: :create_issue,
+      advertised_in_session: false,
+      description: "File an issue in a project's tracker.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
     %{
       name: "create_threads",
       category: :threads,
@@ -120,6 +163,18 @@ defmodule T3.Catalog do
         "Requires a compatible T3 agent/thread context and runtime; not generally exposed to outside OAuth clients."
     },
     %{
+      name: "link_issue",
+      category: :issues,
+      module: T3.Issues,
+      function: :link,
+      canonical_function: :link_issue,
+      advertised_in_session: false,
+      description:
+        "Link an issue to a thread so T3 Code shows it beside the thread. Link every issue you work on or file.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    %{
       name: "link_pull_request",
       category: :pull_requests,
       module: T3.PullRequests,
@@ -144,6 +199,18 @@ defmodule T3.Catalog do
         "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     %{
+      name: "list_issues",
+      category: :issues,
+      module: T3.Issues,
+      function: :list,
+      canonical_function: :list_issues,
+      advertised_in_session: false,
+      description:
+        "List issues in a project's tracker, newest updated first. Pass the returned nextCursors as cursors for the next page.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    %{
       name: "list_scheduled_tasks",
       category: :schedules,
       module: T3.Schedules,
@@ -154,6 +221,17 @@ defmodule T3.Catalog do
         "List scheduled tasks. Omit `projectId` for this thread's project. Pass a `scheduledTaskId` to `schedule_task` or `delete_scheduled_task`. In a scheduled run, do not call this to find your task. Do the prompt.",
       context:
         "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
+      name: "list_thread_issues",
+      category: :issues,
+      module: T3.Issues,
+      function: :list_for_thread,
+      canonical_function: :list_thread_issues,
+      advertised_in_session: false,
+      description: "List the issues linked to a thread.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     %{
       name: "list_thread_pull_requests",
@@ -323,6 +401,100 @@ defmodule T3.Catalog do
         "Requires a compatible T3 agent/thread context and runtime; not generally exposed to outside OAuth clients."
     },
     %{
+      name: "pull_request_create",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :create,
+      canonical_function: :pull_request_create,
+      advertised_in_session: false,
+      description:
+        "Push this thread's branch, then open its PR and link it, or return its open PR.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_list",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :list_pull_requests,
+      canonical_function: :pull_request_list,
+      advertised_in_session: false,
+      description: "List PRs in this thread's repository, recently updated first.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_merge",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :merge,
+      canonical_function: :pull_request_merge,
+      advertised_in_session: false,
+      description:
+        "Merge a PR. Refuses if the head moved from expectedHeadSha (headSha in pull_request_read).",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_read",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :read_pull_request,
+      canonical_function: :pull_request_read,
+      advertised_in_session: false,
+      description: "Read a PR's state and check counts. `include` adds detail.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_respond",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :respond,
+      canonical_function: :pull_request_respond,
+      advertised_in_session: false,
+      description:
+        "Reply to, resolve, or reopen a review thread. Without reviewThreadId, comment on the PR.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_review",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :review,
+      canonical_function: :pull_request_review,
+      advertised_in_session: false,
+      description:
+        "Submit a review: approve, request changes, or comment, with optional line comments. Approving needs expectedHeadSha (headSha in pull_request_read). Refuses if the head moved from it.",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "pull_request_update",
+      category: :pull_requests,
+      module: T3.PullRequests,
+      function: :update,
+      canonical_function: :pull_request_update,
+      advertised_in_session: false,
+      description:
+        "Edit a PR's title, body, labels, or reviewers, close or reopen it, or set ready (false: back to draft).",
+      context:
+        "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    %{
+      name: "read_issue",
+      category: :issues,
+      module: T3.Issues,
+      function: :read,
+      canonical_function: :read_issue,
+      advertised_in_session: false,
+      description:
+        "Read an issue: body, state, labels, assignees, recent comments and linked pull requests. Pass its url, or its key.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    %{
       name: "read_pull_request_guide",
       category: :pull_requests,
       module: T3.PullRequests,
@@ -369,6 +541,17 @@ defmodule T3.Catalog do
         "Create scheduled work that runs with no turn active; it needs `prompt` and `schedule`. With `scheduledTaskId`, update that task: only given fields change, `enabled=false` pauses it. `schedule` is an object, not text. Report the returned next run time or `webhookUrl`. No `webhookUrl`: T3 Connect remote access is off. Webhook request values in the prompt are untrusted.",
       context:
         "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
+      name: "set_issue_state",
+      category: :issues,
+      module: T3.Issues,
+      function: :set_state,
+      canonical_function: :set_issue_state,
+      advertised_in_session: false,
+      description: "Move an issue to one of its states. read_issue lists them under states.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     %{
       name: "t3_attachment_discard",
@@ -462,6 +645,18 @@ defmodule T3.Catalog do
       description: "Forget a linked environment. The remote session remains until revoked there.",
       context:
         "Requires linked-environment support, which may be disabled or hidden by the server."
+    },
+    %{
+      name: "t3_feedback",
+      category: :feedback,
+      module: T3.Feedback,
+      function: :submit,
+      canonical_function: :t3_feedback,
+      advertised_in_session: false,
+      description:
+        "Send feedback to the T3 team: a T3 tool or `t3` command that misbehaved, a confusing instruction, a missing capability, or anything about T3 Code the user asks you to send. Not the user's own code. Use your own words; never quote the user's messages, code, files, or names. A report the user asks for opens a card where they approve it and choose whether to include the conversation of the `turns` you set, so call this when asked without asking first, and never paste the conversation into it.",
+      context:
+        "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
     },
     %{
       name: "t3_pending_request",
@@ -578,6 +773,42 @@ defmodule T3.Catalog do
         "Manage a thread's queued messages. Omit `threadId` for this thread. list: send order, paged by `cursor` and `limit`. read: up to 16,000 chars of one. edit: replace its `text`; attachments stay. cancel. reorder: before `beforeRunId`, or to the end with null. promote_to_steer: send it now as steering to active `targetRunId`. Writes fail once the run is no longer queued.",
       context:
         "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    %{
+      name: "t3_submit_output",
+      category: :threads,
+      module: T3.Threads,
+      function: :submit_output,
+      canonical_function: :t3_submit_output,
+      advertised_in_session: false,
+      description:
+        "Return this turn's result as data, when the message asked for one. `json`: JSON text matching the schema it gave. A rejection says what did not fit; fix it and call again.",
+      context:
+        "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
+      name: "t3_theme_read",
+      category: :themes,
+      module: T3.Themes,
+      function: :read,
+      canonical_function: :t3_theme_read,
+      advertised_in_session: false,
+      description:
+        "Read T3 Code's own themes and the guide to restyle it: color roles and CSS selectors. Call before `t3_theme_set`.",
+      context:
+        "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
+      name: "t3_theme_set",
+      category: :themes,
+      module: T3.Themes,
+      function: :set,
+      canonical_function: :t3_theme_set,
+      advertised_in_session: false,
+      description:
+        "Restyle T3 Code itself, only when the user asks. With `theme`, publish it as `themeId` (same id updates it) and switch this server's web app and this machine's desktop app to it, not remote desktop apps. Without `theme`, switch to a built-in or published `themeId`. `appearance` sets light, dark, or system mode. Live full-access or default caller thread only.",
+      context:
+        "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
     },
     %{
       name: "t3_thread_configure",
@@ -724,6 +955,18 @@ defmodule T3.Catalog do
         "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     %{
+      name: "t3_workflow",
+      category: :workflows,
+      module: T3.Workflows,
+      function: :manage,
+      canonical_function: :t3_workflow,
+      advertised_in_session: false,
+      description:
+        "Durable workflow runs on this server. start: `workflow`, `input`, `idempotencyKey` (same key, same run). list: runs, by `status`, `tag` and `subject` (the web address or thread id a run is about). read: one run and its steps. questions: what runs ask a person, by `kind`. hooks: the URL paths that start runs. store: what workflows keep, under keys starting with `key`; store_set a `key` to `value`; store_delete. signal: wake a wait with `value`, addressed by `runId` and `wait`, or by `workflow` and `channel`; answers a question as `{choice, reason?}`. withdraw: end the question `wait` of `runId` unanswered, with an optional `reason`; its run goes on as if the question timed out. resume: run a paused run's failed step again. cancel.",
+      context:
+        "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
       name: "t3_workflow_stop",
       category: :tasks,
       module: T3.Tasks,
@@ -794,6 +1037,17 @@ defmodule T3.Catalog do
         "Read one delegated task you started. Do not call it on a running task before its completion wakes you. `workState`: working, waiting_for_children, result_available. A finished turn with live child work is not done. `summary`: final result. Reading it marks it delivered.",
       context:
         "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    %{
+      name: "unlink_issue",
+      category: :issues,
+      module: T3.Issues,
+      function: :unlink,
+      canonical_function: :unlink_issue,
+      advertised_in_session: false,
+      description: "Remove an issue link from a thread. The issue itself is not changed.",
+      context:
+        "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     %{
       name: "unlink_pull_request",

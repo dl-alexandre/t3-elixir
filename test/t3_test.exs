@@ -127,6 +127,19 @@ defmodule T3Test do
     end
   end
 
+  test "MCP client metadata reports the package version", %{origin: origin} do
+    _client = connect(origin)
+
+    request =
+      Stream.repeatedly(fn ->
+        assert_receive {:request, "POST", _, _, body}, 1000
+        JSON.decode!(body)
+      end)
+      |> Enum.find(&(&1["method"] == "initialize"))
+
+    assert request["params"]["clientInfo"]["version"] == "0.4.0"
+  end
+
   defp collect_requests(acc) do
     receive do
       {:request, _, _, _, _} = request -> collect_requests([request | acc])

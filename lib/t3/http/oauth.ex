@@ -22,4 +22,6 @@ defmodule T3.HTTP.OAuth do
   def decision(client, opts \\ []), do: T3.HTTP.call(client, :oauth_decision, opts)
   @doc "POST `/oauth/mcp/token`. Body encoding: form."
   def token(client, opts \\ []), do: T3.HTTP.call(client, :oauth_token, opts)
+  @doc "POST `/oauth/mcp/revoke`. Body encoding: json."
+  def revoke(client, opts \\ []), do: T3.HTTP.call(client, :oauth_revoke, opts)
 end

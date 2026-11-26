@@ -33,6 +33,7 @@ defmodule T3.HTTP do
   @methods [:get, :post, :put, :patch, :delete, :head, :options]
 
   @doc "Create an HTTP configuration. Requires an origin URL, HTTPS or loopback HTTP."
+  @spec new(keyword()) :: t()
   def new(opts) do
     origin = Keyword.fetch!(opts, :base_url)
     uri = URI.parse(origin)
@@ -63,9 +64,12 @@ defmodule T3.HTTP do
   end
 
   @doc "Return every declared HTTP endpoint."
+  @spec endpoints() :: [map()]
   defdelegate endpoints(), to: Catalog, as: :all
 
   @doc "Call a declared endpoint using :params, :query, :json, :form, :body and :headers options."
+  @spec call(t(), atom()) :: term()
+  @spec call(t(), atom(), keyword()) :: term()
   def call(client, endpoint, opts \\ []) do
     case Catalog.fetch(endpoint) do
       nil ->
@@ -85,8 +89,51 @@ defmodule T3.HTTP do
   `:decode` may be `:auto` (default), `:json`, or `:binary`. Response bodies are
   bounded by `max_body_bytes`; receive and pool timeouts are bounded too.
   """
+  @spec request(t(), atom(), binary()) :: term()
+  @spec request(t(), atom(), binary(), keyword()) :: term()
   def request(%__MODULE__{} = client, method, path, opts \\ [])
       when method in @methods and is_binary(path) do
+    started = System.monotonic_time()
+    event = [:t3, :http, :request]
+    :telemetry.execute(event ++ [:start], %{system_time: System.system_time()}, %{method: method})
+
+    try do
+      result = do_request(client, method, path, opts)
+
+      :telemetry.execute(event ++ [:stop], %{duration: System.monotonic_time() - started}, %{
+        method: method,
+        outcome: if(match?({:ok, _}, result), do: :ok, else: :error)
+      })
+
+      result
+    rescue
+      error ->
+        :telemetry.execute(
+          event ++ [:exception],
+          %{duration: System.monotonic_time() - started},
+          %{
+            method: method,
+            error: error.__struct__
+          }
+        )
+
+        reraise error, __STACKTRACE__
+    catch
+      kind, reason ->
+        :telemetry.execute(
+          event ++ [:exception],
+          %{duration: System.monotonic_time() - started},
+          %{
+            method: method,
+            error: kind
+          }
+        )
+
+        :erlang.raise(kind, reason, __STACKTRACE__)
+    end
+  end
+
+  defp do_request(%__MODULE__{} = client, method, path, opts) do
     with :ok <- safe_path(path),
          {:ok, body, content_type} <- encode_body(opts),
          {:ok, headers} <- request_headers(client, opts, content_type) do
@@ -138,6 +185,7 @@ defmodule T3.HTTP do
   end
 
   @doc false
+  @spec prepare_request(t(), atom(), binary(), keyword()) :: term()
   def prepare_request(%__MODULE__{} = client, method, path, opts)
       when method in @methods and is_binary(path) do
     with :ok <- safe_path(path),
@@ -154,23 +202,33 @@ defmodule T3.HTTP do
   end
 
   @doc "Stream a response with synchronous callback backpressure; see T3.HTTP.Stream."
+  @spec stream(t(), atom(), binary(), function()) :: term()
+  @spec stream(t(), atom(), binary(), function(), keyword()) :: term()
   defdelegate stream(client, method, path, callback, opts \\ []), to: T3.HTTP.Stream, as: :run
 
   @doc "Start a cancellable streaming Task owned by the calling process."
+  @spec start_stream(t(), atom(), binary(), function()) :: term()
+  @spec start_stream(t(), atom(), binary(), function(), keyword()) :: term()
   defdelegate start_stream(client, method, path, callback, opts \\ []),
     to: T3.HTTP.Stream,
     as: :start
 
   @doc "Cancel a streaming Task owned by this process and close its network worker."
+  @spec cancel_stream(Task.t()) :: term()
   defdelegate cancel_stream(task), to: T3.HTTP.Stream, as: :cancel
 
   @doc "Routes implemented outside EnvironmentHttpApi, including guest/device/media APIs."
+  @spec raw_endpoints() :: [map()]
   defdelegate raw_endpoints(), to: T3.HTTP.Raw, as: :endpoints
 
   @doc "Build a multipart body from string fields and local-file or in-memory file tuples."
+  @spec multipart(keyword()) :: term()
+  @spec multipart(keyword(), list()) :: term()
   defdelegate multipart(fields, files \\ []), to: T3.HTTP.Multipart, as: :build
 
   @doc "POST exact attachment bytes to the relative URL returned by t3_attachment_prepare_upload."
+  @spec upload(t(), binary(), binary()) :: term()
+  @spec upload(t(), binary(), binary(), keyword()) :: term()
   def upload(client, relative_url, bytes, opts \\ []) when is_binary(bytes),
     do:
       request(

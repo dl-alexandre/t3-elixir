@@ -103,14 +103,16 @@ defmodule T3.MCPCatalogTest do
 
     assert manifest["upstream_ref"] == T3.Catalog.upstream_ref()
     assert Enum.sort(Enum.map(manifest["tools"], & &1["name"])) == Enum.sort(T3.Catalog.names())
-    assert length(T3.Catalog.names()) == 71
-    assert length(Enum.uniq(T3.Catalog.names())) == 71
+    assert length(T3.Catalog.names()) == 93
+    assert length(Enum.uniq(T3.Catalog.names())) == 93
 
     assert {:ok, %{module: T3.Environments, function: :link}} =
              T3.Catalog.fetch("t3_environment_link")
 
     assert T3.Catalog.fetch("future_tool") == :error
     assert Enum.all?(T3.Catalog.tools(:projects), &(&1.module == T3.Projects))
+    assert Enum.all?(T3.Catalog.tools(:issues), &(&1.module == T3.Issues))
+    assert Enum.all?(T3.Catalog.tools(:workflows), &(&1.module == T3.Workflows))
     assert Enum.count(T3.Catalog.tools(), & &1.advertised_in_session) == 66
   end
 
@@ -122,7 +124,7 @@ defmodule T3.MCPCatalogTest do
     assert {:ok, comparison} = T3.Catalog.compare(client)
     assert [%{name: "t3_project_list"}] = comparison.available
     assert [%{"name" => "future_tool"}] = comparison.unwrapped
-    assert length(comparison.unavailable) == 70
+    assert length(comparison.unavailable) == 92
   end
 
   test "discovery refuses cursor loops instead of polling forever" do

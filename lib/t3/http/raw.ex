@@ -17,6 +17,7 @@ defmodule T3.HTTP.Raw do
 
   @device "/api/device-hub"
   @routes [
+    {:desktop_readiness_proof, :get, "/.well-known/t3/desktop-readiness", :none, :none},
     {:asset, :get, "/api/assets/:token/:fileName", :binary, :asset_capability},
     {:attachment_upload, :post, "/api/attachments/upload/:token", :raw, :upload_capability},
     {:otlp_traces, :post, "/api/observability/v1/traces", :json, :orchestration_operate},

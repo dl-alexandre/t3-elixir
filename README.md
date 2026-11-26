@@ -1,12 +1,12 @@
 # T3
 
 An independent Elixir SDK for T3 Code: **MCP, HTTP JSON, WebSocket RPC,
-raw media/device streams, and the local CLI**. Targets Elixir 1.20 and OTP 29 on Linux
-or macOS. Not yet published to Hex.
+raw media/device streams, and the local CLI**. Supports Elixir `~> 1.18` and OTP 29
+on Linux or macOS.
 
-The pinned inventory covers **71 MCP tools**, **38 HTTP routes**, **211 WebSocket
-RPC methods (27 streams)**, **45 additional HTTP operations**, **4 raw WebSocket routes**,
-and **16 CLI command families**. Named helpers are backed
+The pinned inventory covers **93 MCP tools**, **59 HTTP routes**, **261 WebSocket
+RPC methods (35 streams)**, **46 additional HTTP operations**, **4 raw WebSocket routes**,
+and **23 CLI command families**. Named helpers are backed
 by generic transports for future server additions. [INTERFACES.md](INTERFACES.md)
 lists every operation, its source revision, authentication and coverage limits.
 
@@ -15,23 +15,23 @@ lists every operation, its source revision, authentication and coverage limits.
 - This README: installation and interface examples.
 - [Authentication](docs/AUTHENTICATION.md): MCP, native credentials, guest cookies and media tickets.
 - [Troubleshooting](docs/TROUBLESHOOTING.md): errors, scopes, lifecycle and stream ACKs.
-- [Stream contract](docs/STREAM_CONTRACT.md): resume cursors, ordering and full inventory (0.3.0 checkout).
-- [Supervised board reader](docs/BOARD_READER.md): reconnect, local service auth and normalized events (new in 0.2.0).
+- [Stream contract](docs/STREAM_CONTRACT.md): resume cursors, ordering and full inventory.
+- [Supervised board reader](docs/BOARD_READER.md): reconnect, local service auth and normalized events.
 - [Interface inventory](INTERFACES.md): every pinned operation and compatibility limits.
-- [Live testing](LIVE_TESTING.md), [contributing](CONTRIBUTING.md) and [release checklist](RELEASE.md).
+- [Live testing](LIVE_TESTING.md), [contributing](CONTRIBUTING.md) and [release checklist](https://github.com/dl-alexandre/t3-elixir/blob/main/RELEASE.md).
 
 Generate the searchable API reference with `mix docs` and open `doc/index.html`.
-The published API reference is available on [HexDocs](https://hexdocs.pm/t3/0.2.0).
+The API reference is available on [HexDocs](https://hexdocs.pm/t3).
 
 ## Installation
 
 Add the Hex dependency:
 
 ```elixir
-{:t3, "~> 0.2.0"}
+{:t3, "~> 0.4.0"}
 ```
 
-For a Git checkout, use `{:t3, github: "dl-alexandre/t3-elixir", tag: "v0.2.0"}`.
+For a Git checkout, use `{:t3, github: "dl-alexandre/t3-elixir", tag: "v0.4.0"}`.
 Local development can use `{:t3, path: "/path/to/t3-elixir"}`.
 
 Dependencies handle the hard parts: ConduitMCP for MCP/OAuth, Finch for HTTP,
@@ -223,9 +223,10 @@ T3.CLI.run(cli, ["thread", "send", thread_id, "-"], input: "message via stdin")
 Arguments are passed without a shell. Command-family helpers and a generic runner
 support the installed executable, with bounded output/deadlines, streaming,
 stdin/EOF and cancellation. Linux/macOS are supported; there is no PTY emulator
-or arbitrary inherited-file-descriptor API. CLI commands can differ by release:
-our installed `t3 v0.1.1` lacks newer `t3 thread` commands. The SDK does not upgrade
-or start T3 automatically. See `T3.CLI` documentation for interactive process IO.
+or arbitrary inherited-file-descriptor API. CLI commands can differ by release.
+The SDK does not upgrade or start T3 automatically. Set `T3CODE_CLI_PATH` to select
+the executable when it is not on `PATH`. See `T3.CLI` documentation for interactive
+process IO.
 
 ## Authentication and lifecycle
 
@@ -235,8 +236,8 @@ the allowed permission mode. HTTPS/WSS are required except on loopback.
 
 For apps with their own callback, use `T3.OAuth.begin/2` and `complete/2`. Store the
 flow privately and consume it once. Tokens are secret-wrapped. T3.Application
-runs a shared in-memory store; `oauth_options: [store: {YourStore, options}]` can
-replace it. Loopback OAuth enables Conduit's explicit development exception;
+runs a shared in-memory store; Finch and OAuth store options can be configured.
+Loopback OAuth enables Conduit's explicit development exception;
 private HTTPS OAuth hosts may need `oauth_options: [allow_private: ["your-CIDR"]]`.
 The simple MCP facade uses the signed-in bearer token; it does not automatically
 refresh an existing connection. Reauthorize and reconnect when needed, or use
@@ -260,25 +261,21 @@ mix docs --warnings-as-errors
 mix hex.build
 ```
 
-Tests cover actual ephemeral HTTP/WebSocket fixtures and subprocesses, complete
+Version 0.4.0 adds `:telemetry` events and configurable `T3.Application` Finch/OAuth
+store options. Finch 0.24 and 0.25 are supported. Tests cover actual ephemeral
+HTTP/WebSocket fixtures and subprocesses, complete
 catalog routing, session handling, OAuth, streaming back-pressure, cancellation,
 errors and bounds. The running T3 server's metadata, OAuth discovery/registration,
 CLI version/help and unauthenticated WebSocket protocol responses were checked.
 Authenticated live HTTP/RPC operations and destructive operations were not run.
 
 Conduit is pinned to `~> 0.11.0`; it includes Plug/Bandit, server-related runtime
-processes and an exact NimbleOptions 1.1.1 dependency. Dependency experiments are
-in `docs/dependency-evaluation.md` and `evaluation/README.md`.
+processes and an exact NimbleOptions 1.1.1 dependency.
 
 The package/application name is `t3`, maintained in `dl-alexandre/t3-elixir`.
-The archive is local and has not been published. Publication still requires green
-CI, live workflow validation with appropriate credentials, and Hex authentication;
-see the release checklist.
 
 ## CI, live testing and release readiness
 
 The local fixture suite excludes live tests by default. See [LIVE_TESTING.md](LIVE_TESTING.md)
-for opt-in read-only probes and [RELEASE.md](RELEASE.md) for the CI matrix and publication
-checklist. GitHub Actions is configured for Linux/macOS with Elixir 1.20.5 / OTP 29.1.2; it
-runs when the repository is pushed. No CI publishing
-or live-environment credentials are configured.
+for opt-in read-only probes and [RELEASE.md](https://github.com/dl-alexandre/t3-elixir/blob/main/RELEASE.md) for the CI matrix and publication
+checklist. GitHub Actions is configured for Linux/macOS with Elixir 1.20.5 / OTP 29.1.2.

@@ -30,11 +30,14 @@ defmodule T3.CLI do
     @moduledoc "A completed CLI invocation. stdout and stderr share the output field."
     @derive {Inspect, only: [:exit_status]}
     defstruct [:exit_status, :output]
+    @type t :: %__MODULE__{exit_status: non_neg_integer() | nil, output: binary() | nil}
   end
 
   @doc "Configure the executable, working directory, environment, deadline and output limit."
+  @spec new() :: t()
+  @spec new(keyword()) :: t()
   def new(opts \\ []) do
-    client = struct!(__MODULE__, opts)
+    client = struct!(__MODULE__, default_executable(opts))
 
     unless is_binary(client.executable) and client.executable != "",
       do: raise(ArgumentError, "executable must be a nonempty string")
@@ -59,18 +62,54 @@ defmodule T3.CLI do
   end
 
   @doc "Run T3 with literal arguments. Optional :input iodata is written then stdin closes; default input is empty."
+  @spec run(t(), [String.t()]) :: {:ok, Result.t()} | {:error, Error.t()}
+  @spec run(t(), [String.t()], keyword()) :: {:ok, Result.t()} | {:error, Error.t()}
   def run(%__MODULE__{} = client, args, opts \\ []) do
-    with {:ok, pid} <-
-           stream(
-             client,
-             args,
-             opts |> Keyword.put_new(:input, "") |> Keyword.put(:owner, self())
-           ) do
-      await(pid)
+    started = System.monotonic_time()
+    :telemetry.execute([:t3, :cli, :run, :start], %{system_time: System.system_time()}, %{})
+
+    try do
+      result =
+        with {:ok, pid} <-
+               stream(
+                 client,
+                 args,
+                 opts |> Keyword.put_new(:input, "") |> Keyword.put(:owner, self())
+               ) do
+          await(pid)
+        end
+
+      :telemetry.execute(
+        [:t3, :cli, :run, :stop],
+        %{duration: System.monotonic_time() - started},
+        %{outcome: if(match?({:ok, _}, result), do: :ok, else: :error)}
+      )
+
+      result
+    rescue
+      error ->
+        :telemetry.execute(
+          [:t3, :cli, :run, :exception],
+          %{duration: System.monotonic_time() - started},
+          %{error: error.__struct__}
+        )
+
+        reraise error, __STACKTRACE__
+    catch
+      kind, reason ->
+        :telemetry.execute(
+          [:t3, :cli, :run, :exception],
+          %{duration: System.monotonic_time() - started},
+          %{error: kind}
+        )
+
+        :erlang.raise(kind, reason, __STACKTRACE__)
     end
   end
 
   @doc "Start a linked runner; :owner defaults to caller. Stdin stays open unless :input is supplied."
+  @spec stream(t(), [String.t()]) :: GenServer.on_start() | {:error, Error.t()}
+  @spec stream(t(), [String.t()], keyword()) :: GenServer.on_start() | {:error, Error.t()}
   def stream(%__MODULE__{} = client, args, opts \\ []) do
     unless is_list(args) and Enum.all?(args, &is_binary/1),
       do: raise(ArgumentError, "arguments must be a list of strings")
@@ -91,23 +130,35 @@ defmodule T3.CLI do
   end
 
   @doc "Write iodata to the streaming command's stdin."
+  @spec write(pid(), iodata()) :: term()
   def write(pid, data), do: GenServer.call(pid, {:write, IO.iodata_to_binary(data)}, :infinity)
 
   @doc "Close stdin while continuing to read output (EOF for commands reading `-`)."
+  @spec close_stdin(pid()) :: term()
   def close_stdin(pid), do: GenServer.call(pid, :close_stdin, :infinity)
 
   @doc "Return the OS process ID, or an error with code :process_exited if it already exited."
+  @spec os_pid(pid()) :: term()
   def os_pid(pid), do: GenServer.call(pid, :os_pid)
 
   @doc "Stop a streaming invocation."
+  @spec cancel(pid()) :: term()
   def cancel(pid), do: GenServer.call(pid, :cancel)
 
   @doc "Read version output without modifying T3."
+  @spec version() :: {:ok, Result.t()} | {:error, Error.t()}
+  @spec version(t()) :: {:ok, Result.t()} | {:error, Error.t()}
   def version(client \\ new()), do: run(client, ["--version"])
   @doc "Read top-level or subcommand help without invoking the operation."
+  @spec help() :: {:ok, Result.t()} | {:error, Error.t()}
+  @spec help(t()) :: {:ok, Result.t()} | {:error, Error.t()}
+  @spec help(t(), [String.t()]) :: {:ok, Result.t()} | {:error, Error.t()}
   def help(client \\ new(), command \\ []), do: run(client, command ++ ["--help"])
 
   @doc "Discover commands actually advertised by this installed version's help."
+  @spec commands() :: {:ok, [map()]} | {:error, Error.t()}
+  @spec commands(t()) :: {:ok, [map()]} | {:error, Error.t()}
+  @spec commands(t(), [String.t()]) :: {:ok, [map()]} | {:error, Error.t()}
   def commands(client \\ new(), command \\ []) do
     with {:ok, result} <- help(client, command) do
       commands =
@@ -127,13 +178,18 @@ defmodule T3.CLI do
   end
 
   @doc "Known command families; commands/2 discovers the installed executable's actual support."
+  @spec families() :: [String.t()]
   def families,
     do:
-      ~w(start serve app pair auth browser project service update uninstall theme trace doctor triage connect thread)
+      ~w(start serve app pair auth environment browser project thread feedback workflow up status service update install uninstall theme trace doctor policy triage connect)
 
   for family <-
-        ~w(start serve app pair auth browser project service update uninstall theme trace doctor triage connect thread) do
+        ~w(start serve app pair auth environment browser project thread feedback workflow up status service update install uninstall theme trace doctor policy triage connect) do
     @doc "Run the `t3 #{family}` command family. Requires support in the installed T3 version."
+    @spec unquote(String.to_atom(family))(t()) ::
+            {:ok, Result.t()} | {:error, Error.t()}
+    @spec unquote(String.to_atom(family))(t(), [String.t()]) ::
+            {:ok, Result.t()} | {:error, Error.t()}
     def unquote(String.to_atom(family))(client, arguments \\ []),
       do: run(client, [unquote(family) | arguments])
   end
@@ -157,6 +213,17 @@ defmodule T3.CLI do
 
       {:t3_cli, ^pid, {:error, error}} ->
         {:error, error}
+    end
+  end
+
+  defp default_executable(opts) do
+    if not Keyword.has_key?(opts, :executable) do
+      case System.get_env("T3CODE_CLI_PATH") do
+        path when is_binary(path) and path != "" -> Keyword.put(opts, :executable, path)
+        _ -> opts
+      end
+    else
+      opts
     end
   end
 end

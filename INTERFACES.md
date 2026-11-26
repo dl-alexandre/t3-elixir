@@ -1,5 +1,5 @@
 # Interface inventory
-Contract revision: `337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17` ([upstream source](https://github.com/pingdotgg/t3code/tree/337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17)). Captured 2026-11-05.
+Contract revision: `d8a52dda31d8e2fe65b183cc97d1e4457d9c2396` ([upstream source](https://github.com/pingdotgg/t3code/tree/d8a52dda31d8e2fe65b183cc97d1e4457d9c2396)). Captured 2026-11-26.
 This SDK covers the pinned wire operations through named helpers and generic
 transports. It does not guarantee server-version support, credential permissions
 or a T3 agent context. Payloads retain the original JSON/string-keyed format;
@@ -10,10 +10,11 @@ permit new operation names absent from the static catalogs.
 
 ## MCP
 
-71 known tools: 66 advertised to the development agent and five additional
-upstream definitions. Use `T3.discover(client)` to inspect a connected external
-client's actual surface. MCP protocol 2025-06-18; ConduitMCP manages transport and
-OAuth. A category helper and `T3.Tools.<wire_name>/2` exist for every entry.
+93 known upstream tools are represented, including 66 advertised to the development
+agent and 27 additional definitions in upstream source. Use `T3.discover(client)`
+to inspect a connected external client's actual surface. MCP protocol 2025-06-18;
+ConduitMCP manages transport and OAuth. A category helper and
+`T3.Tools.<wire_name>/2` exist for every entry.
 
 Permission and context checks remain on the server. Browser/device/UI rendering,
 worktree handoff and delegated-agent operations generally require agent context;
@@ -21,6 +22,10 @@ adding a wrapper does not make an external OAuth client an agent session.
 
 | Wire tool | Category helper | Inventory source |
 |---|---|---|
+| `ci_logs` | `T3.PullRequests.logs` | Upstream only |
+| `ci_rerun` | `T3.PullRequests.rerun_checks` | Upstream only |
+| `comment_on_issue` | `T3.Issues.comment` | Upstream only |
+| `create_issue` | `T3.Issues.create` | Upstream only |
 | `create_threads` | `T3.Threads.create_many` | Session + upstream |
 | `delegate_task` | `T3.Tasks.delegate` | Session + upstream |
 | `delete_scheduled_task` | `T3.Schedules.delete` | Session + upstream |
@@ -30,9 +35,12 @@ adding a wrapper does not make an external OAuth client an agent session.
 | `device_screenshot` | `T3.Devices.screenshot` | Session + upstream |
 | `html_preview` | `T3.HTML.preview` | Session + upstream |
 | `html_render` | `T3.HTML.render` | Session + upstream |
+| `link_issue` | `T3.Issues.link` | Upstream only |
 | `link_pull_request` | `T3.PullRequests.link` | Session + upstream |
 | `link_pull_requests` | `T3.PullRequests.link_many` | Upstream only |
+| `list_issues` | `T3.Issues.list` | Upstream only |
 | `list_scheduled_tasks` | `T3.Schedules.list` | Session + upstream |
+| `list_thread_issues` | `T3.Issues.list_for_thread` | Upstream only |
 | `list_thread_pull_requests` | `T3.PullRequests.list` | Session + upstream |
 | `orchestrator_capabilities` | `T3.Tasks.capabilities` | Session + upstream |
 | `preview_act` | `T3.Previews.act` | Session + upstream |
@@ -47,10 +55,19 @@ adding a wrapper does not make an external OAuth client an agent session.
 | `preview_snapshot` | `T3.Previews.snapshot` | Session + upstream |
 | `preview_status` | `T3.Previews.status` | Session + upstream |
 | `preview_wait_for` | `T3.Previews.wait_for` | Session + upstream |
+| `pull_request_create` | `T3.PullRequests.create` | Upstream only |
+| `pull_request_list` | `T3.PullRequests.list_pull_requests` | Upstream only |
+| `pull_request_merge` | `T3.PullRequests.merge` | Upstream only |
+| `pull_request_read` | `T3.PullRequests.read_pull_request` | Upstream only |
+| `pull_request_respond` | `T3.PullRequests.respond` | Upstream only |
+| `pull_request_review` | `T3.PullRequests.review` | Upstream only |
+| `pull_request_update` | `T3.PullRequests.update` | Upstream only |
+| `read_issue` | `T3.Issues.read` | Upstream only |
 | `read_pull_request_guide` | `T3.PullRequests.read_guide` | Session + upstream |
 | `request_secret` | `T3.Requests.secret` | Session + upstream |
 | `run_scheduled_task_now` | `T3.Schedules.run_now` | Session + upstream |
 | `schedule_task` | `T3.Schedules.save` | Session + upstream |
+| `set_issue_state` | `T3.Issues.set_state` | Upstream only |
 | `t3_attachment_discard` | `T3.Attachments.discard` | Session + upstream |
 | `t3_attachment_prepare_upload` | `T3.Attachments.prepare_upload` | Session + upstream |
 | `t3_background_wait` | `T3.Tasks.background_wait` | Session + upstream |
@@ -59,6 +76,7 @@ adding a wrapper does not make an external OAuth client an agent session.
 | `t3_environment_preferences_update` | `T3.Environments.update_preferences` | Session + upstream |
 | `t3_environment_read` | `T3.Environments.read` | Session + upstream |
 | `t3_environment_unlink` | `T3.Environments.unlink` | Upstream only |
+| `t3_feedback` | `T3.Feedback.submit` | Upstream only |
 | `t3_pending_request` | `T3.Requests.manage` | Session + upstream |
 | `t3_preview_close` | `T3.Previews.close` | Session + upstream |
 | `t3_preview_list` | `T3.Previews.list` | Session + upstream |
@@ -69,6 +87,9 @@ adding a wrapper does not make an external OAuth client an agent session.
 | `t3_project_read` | `T3.Projects.read` | Session + upstream |
 | `t3_project_update` | `T3.Projects.update` | Session + upstream |
 | `t3_queue` | `T3.Queues.manage` | Session + upstream |
+| `t3_submit_output` | `T3.Threads.submit_output` | Upstream only |
+| `t3_theme_read` | `T3.Themes.read` | Upstream only |
+| `t3_theme_set` | `T3.Themes.set` | Upstream only |
 | `t3_thread_configure` | `T3.Threads.configure` | Session + upstream |
 | `t3_thread_interrupt` | `T3.Threads.interrupt` | Session + upstream |
 | `t3_thread_launch` | `T3.Threads.launch` | Session + upstream |
@@ -81,12 +102,14 @@ adding a wrapper does not make an external OAuth client an agent session.
 | `t3_thread_transfer` | `T3.Threads.transfer` | Session + upstream |
 | `t3_thread_update` | `T3.Threads.update` | Session + upstream |
 | `t3_thread_wait` | `T3.Threads.wait` | Session + upstream |
+| `t3_workflow` | `T3.Workflows.manage` | Upstream only |
 | `t3_workflow_stop` | `T3.Tasks.stop_workflow` | Session + upstream |
 | `t3_worktree_handoff` | `T3.Worktrees.handoff` | Session + upstream |
 | `t3_worktree_list` | `T3.Worktrees.list` | Session + upstream |
 | `t3_worktree_status` | `T3.Worktrees.status` | Session + upstream |
 | `task_cancel` | `T3.Tasks.cancel` | Session + upstream |
 | `task_status` | `T3.Tasks.status` | Session + upstream |
+| `unlink_issue` | `T3.Issues.unlink` | Upstream only |
 | `unlink_pull_request` | `T3.PullRequests.unlink` | Session + upstream |
 | `unlink_pull_requests` | `T3.PullRequests.unlink_many` | Upstream only |
 | `unwatch_pull_request` | `T3.PullRequests.unwatch` | Session + upstream |
@@ -95,7 +118,7 @@ adding a wrapper does not make an external OAuth client an agent session.
 
 ## HTTP JSON
 
-All 38 routes in `EnvironmentHttpApi` are represented. Group modules live under
+All 59 routes in `EnvironmentHttpApi` are represented. Group modules live under
 `T3.HTTP`; `T3.HTTP.call/3` routes an endpoint identifier and `request/4` handles
 new same-origin paths. HTTP credentials are separate from MCP credentials. JSON,
 form and raw body encodings are preserved. The app starts a Finch pool; caller
@@ -118,6 +141,8 @@ DPoP proofs may be supplied; proof generation and signing remain caller-owned.
 | POST | `/api/auth/pairing-links/revoke` |
 | POST | `/api/auth/clients/revoke` |
 | POST | `/api/auth/clients/revoke-others` |
+| POST | `/api/auth/connect-devices/approve` |
+| POST | `/api/auth/connect-devices/revoke` |
 | GET | `/.well-known/oauth-protected-resource` |
 | GET | `/.well-known/oauth-protected-resource/mcp` |
 | GET | `/.well-known/oauth-authorization-server` |
@@ -126,6 +151,7 @@ DPoP proofs may be supplied; proof generation and signing remain caller-owned.
 | POST | `/oauth/mcp/approval` |
 | POST | `/oauth/mcp/decision` |
 | POST | `/oauth/mcp/token` |
+| POST | `/oauth/mcp/revoke` |
 | GET | `/api/orchestration/shell` |
 | GET | `/api/orchestration/threads/:threadId` |
 | GET | `/api/orchestration/threads/:threadId/transcript` |
@@ -134,14 +160,32 @@ DPoP proofs may be supplied; proof generation and signing remain caller-owned.
 | GET | `/api/projects` |
 | POST | `/api/projects/mutate` |
 | POST | `/api/pull-requests/diff` |
+| GET | `/api/voice/cloud/keys` |
+| POST | `/api/voice/cloud/:provider/key` |
+| GET | `/api/voice/cloud/openrouter/models` |
+| POST | `/api/voice/cloud/:provider/transcribe` |
+| GET | `/api/voice/status` |
+| POST | `/api/voice/models/prepare` |
+| GET | `/api/voice/models` |
+| POST | `/api/voice/models/download` |
+| POST | `/api/voice/models/select` |
+| POST | `/api/voice/models/cancel` |
+| POST | `/api/voice/models/remove` |
+| POST | `/api/voice/models/link` |
+| POST | `/api/voice/acceleration` |
+| POST | `/api/voice/model-unload-timeout` |
+| POST | `/api/voice/transcribe` |
+| POST | `/api/voice/post-process` |
 | POST | `/api/connect/link-proof` |
 | POST | `/api/connect/relay-config` |
 | GET | `/api/connect/link-state` |
 | POST | `/api/connect/reachability` |
 | POST | `/api/connect/unlink` |
 | POST | `/api/connect/preferences` |
+| POST | `/api/connect/live-activity-preference` |
 | POST | `/api/t3-connect/health` |
 | POST | `/api/t3-connect/mint-credential` |
+| POST | `/api/peer-link/client-pairing` |
 | POST | `/api/hooks/:hookId/:token` |
 | PUT | `/api/hooks/:hookId/:token` |
 | PATCH | `/api/hooks/:hookId/:token` |
@@ -153,7 +197,7 @@ preserves them and refuses cross-origin destinations.
 
 ## WebSocket RPC
 
-211 methods, including 27 streams, use orchestration protocol 2 over `/ws`.
+261 methods, including 35 streams, use orchestration protocol 2 over `/ws`.
 `T3.RPC.Methods` provides named wrappers; arbitrary names work through
 `T3.RPC.call/4` or `subscribe/4`. Each stream delivers chunks to its subscriber,
 which calls `ack/2` after consumption. `unsubscribe/2` sends an interrupt. The
@@ -168,6 +212,7 @@ have finite defaults and the pending-request limit is bounded.
 
 | Method | Response |
 |---|---|
+| `agentFeedback.answerRequest` | Unary |
 | `agentSessions.import` | Unary |
 | `agentSessions.scan` | Unary |
 | `assets.createUrl` | Unary |
@@ -192,6 +237,20 @@ have finite defaults and the pending-request limit is bounded.
 | `git.resolvePullRequest` | Unary |
 | `git.runStackedAction` | Stream |
 | `guestShare.create` | Unary |
+| `issueTrackers.bindProject` | Unary |
+| `issueTrackers.connect` | Unary |
+| `issueTrackers.list` | Unary |
+| `issues.candidates` | Unary |
+| `issues.comment` | Unary |
+| `issues.comments` | Unary |
+| `issues.create` | Unary |
+| `issues.detail` | Unary |
+| `issues.linkedThreads` | Unary |
+| `issues.list` | Unary |
+| `issues.react` | Unary |
+| `issues.setState` | Unary |
+| `issues.templates` | Unary |
+| `issues.update` | Unary |
 | `mcpApps.callTool` | Unary |
 | `mcpApps.readResource` | Unary |
 | `mcpApps.toolInfo` | Unary |
@@ -203,6 +262,7 @@ have finite defaults and the pending-request limit is bounded.
 | `orchestration.getNativeChildWork` | Unary |
 | `orchestration.getOlderSettledThreads` | Unary |
 | `orchestration.getThreadFamily` | Unary |
+| `orchestration.getThreadLinkMetadata` | Unary |
 | `orchestration.getThreadProjection` | Unary |
 | `orchestration.getThreadTitles` | Unary |
 | `orchestration.getTurnDiff` | Unary |
@@ -215,11 +275,18 @@ have finite defaults and the pending-request limit is bounded.
 | `orchestration.searchThreads` | Unary |
 | `orchestration.stopWorkflow` | Unary |
 | `orchestration.subscribeCommandOutput` | Stream |
+| `orchestration.subscribePromptSuggestion` | Stream |
 | `orchestration.subscribeShell` | Stream |
 | `orchestration.subscribeThread` | Stream |
 | `peerLinks.answerRequest` | Unary |
 | `peerLinks.link` | Unary |
 | `peerLinks.list` | Unary |
+| `peerLinks.names` | Unary |
+| `peerLinks.pairClient` | Unary |
+| `peerLinks.pairLink` | Unary |
+| `peerLinks.subscribeThread` | Stream |
+| `peerLinks.threadHistoryPage` | Unary |
+| `peerLinks.threadItem` | Unary |
 | `peerLinks.unlink` | Unary |
 | `preview.adjust` | Unary |
 | `preview.clearProfile` | Unary |
@@ -246,6 +313,7 @@ have finite defaults and the pending-request limit is bounded.
 | `provider.auth.cancel` | Unary |
 | `provider.auth.complete` | Unary |
 | `provider.auth.logout` | Unary |
+| `provider.auth.removeMethod` | Unary |
 | `provider.auth.respond` | Unary |
 | `provider.auth.start` | Unary |
 | `provider.auth.subscribe` | Stream |
@@ -257,6 +325,8 @@ have finite defaults and the pending-request limit is bounded.
 | `provider.install.remove` | Unary |
 | `provider.install.start` | Unary |
 | `provider.install.subscribe` | Stream |
+| `provider.mcpSignIn.complete` | Unary |
+| `provider.mcpSignIn.start` | Unary |
 | `provider.uploadFeedback` | Unary |
 | `pullRequests.activity` | Unary |
 | `pullRequests.changeBreakdown` | Unary |
@@ -287,6 +357,7 @@ have finite defaults and the pending-request limit is bounded.
 | `pullRequests.setThreadResolution` | Unary |
 | `pullRequests.stack` | Unary |
 | `pullRequests.submitReview` | Unary |
+| `pullRequests.subscribeLinkedThreadRefreshes` | Stream |
 | `pullRequests.subscribeRefreshes` | Stream |
 | `pullRequests.summary` | Unary |
 | `pullRequests.threadComments` | Unary |
@@ -296,8 +367,8 @@ have finite defaults and the pending-request limit is bounded.
 | `review.getDiffFileContents` | Unary |
 | `review.getDiffPreview` | Unary |
 | `scheduledTasks.delete` | Unary |
-| `scheduledTasks.getWebhookDelivery` | Unary |
-| `scheduledTasks.listWebhookDeliveries` | Unary |
+| `scheduledTasks.getWebhookDelivery` | Stream |
+| `scheduledTasks.listWebhookDeliveries` | Stream |
 | `scheduledTasks.rotateWebhookToken` | Unary |
 | `scheduledTasks.runNow` | Unary |
 | `scheduledTasks.setEnabled` | Unary |
@@ -306,6 +377,7 @@ have finite defaults and the pending-request limit is bounded.
 | `secrets.answerRequest` | Unary |
 | `server.acceptAcpRegistryUrlAuth` | Unary |
 | `server.checkOtlpEndpoint` | Unary |
+| `server.checkSecretSource` | Unary |
 | `server.commitDesktopUpdate` | Unary |
 | `server.deleteAcpRegistrySession` | Unary |
 | `server.disableAcpRegistryProvider` | Unary |
@@ -316,17 +388,21 @@ have finite defaults and the pending-request limit is bounded.
 | `server.getNpmRelease` | Unary |
 | `server.getProcessDiagnostics` | Unary |
 | `server.getProcessResourceHistory` | Unary |
+| `server.getProviderRuntimeModeLimits` | Unary |
 | `server.getResourceTelemetryHistory` | Unary |
+| `server.getSettings` | Unary |
 | `server.getStorageCleanupReport` | Stream |
 | `server.getTraceDiagnostics` | Unary |
 | `server.getUsageSummary` | Unary |
 | `server.importAcpRegistrySession` | Unary |
 | `server.listAcpRegistryProviders` | Unary |
 | `server.listAcpRegistrySessions` | Unary |
+| `server.listTextGeneratorModels` | Unary |
 | `server.logoutAcpRegistry` | Unary |
 | `server.prepareAcpRegistryAgent` | Unary |
 | `server.prepareTriage` | Unary |
 | `server.probe` | Unary |
+| `server.reclaimDatabaseSpace` | Unary |
 | `server.refreshProviders` | Unary |
 | `server.refreshUsageRates` | Unary |
 | `server.removeKeybinding` | Unary |
@@ -361,6 +437,7 @@ have finite defaults and the pending-request limit is bounded.
 | `subscribeServerConfig` | Stream |
 | `subscribeServerLifecycle` | Stream |
 | `subscribeTerminalMetadata` | Stream |
+| `subscribeVcsBranch` | Stream |
 | `subscribeVcsStatus` | Stream |
 | `subscribeWorktreeSetup` | Stream |
 | `terminal.attach` | Stream |
@@ -375,14 +452,31 @@ have finite defaults and the pending-request limit is bounded.
 | `vcs.init` | Unary |
 | `vcs.listRefs` | Unary |
 | `vcs.pull` | Unary |
+| `vcs.refreshBranch` | Unary |
 | `vcs.refreshStatus` | Unary |
 | `vcs.removeWorktree` | Unary |
 | `vcs.switchRef` | Unary |
+| `workflows.about` | Unary |
+| `workflows.answer` | Unary |
+| `workflows.cancel` | Unary |
+| `workflows.counts` | Stream |
+| `workflows.deleteDefinition` | Unary |
+| `workflows.get` | Unary |
+| `workflows.getDefinition` | Unary |
+| `workflows.resume` | Unary |
+| `workflows.saveDefinition` | Unary |
+| `workflows.subscribe` | Stream |
+| `workspace.addTaskFolderRepository` | Unary |
+| `workspace.approveLayoutCommands` | Unary |
+| `workspace.layoutCommands` | Unary |
+| `workspace.listFolders` | Unary |
+| `workspace.scanFolders` | Unary |
+| `workspace.taskFolder` | Unary |
 | `worktreeSetup.cancel` | Unary |
 
 ## Additional HTTP routes and streaming
 
-45 additional operations cover the raw routes outside EnvironmentHttpApi. Their
+46 additional operations cover the raw routes outside EnvironmentHttpApi. Their
 methods, patterns and authentication audiences are listed below. Device proxy
 methods/payloads may be further constrained by the installed upstream hub. HEAD
 and other supported proxy methods can use the generic request interface.
@@ -396,6 +490,7 @@ to Multipart. Cookies, media tickets, Range and proof headers are explicit.
 
 | ID | Method | Path | Encoding | Authentication |
 |---|---|---|---|---|
+| `desktop_readiness_proof` | GET | `/.well-known/t3/desktop-readiness` | none | none |
 | `asset` | GET | `/api/assets/:token/:fileName` | binary | asset_capability |
 | `attachment_upload` | POST | `/api/attachments/upload/:token` | raw | upload_capability |
 | `otlp_traces` | POST | `/api/observability/v1/traces` | json | orchestration_operate |
@@ -468,9 +563,11 @@ idle and total lifetime limits are configurable. Owner death closes the transpor
 passing an argument vector without a shell. `commands/2` discovers the actual
 version's help tree; it does not assume the pinned upstream CLI matches your host.
 Named family helpers are available for start, serve, app, pair, auth, browser,
-project, service, update, uninstall, theme, trace, doctor, triage, connect and thread.
-The installed snapshot is `priv/t3/cli.json` (`t3 v0.1.1`); it lacks newer thread
-commands. There is no automatic upgrade or mutation during discovery.
+project, thread, feedback, workflow, up, status, service, update, install, uninstall,
+theme, trace, doctor, policy, triage and connect. The installed snapshot is
+`priv/t3/cli.json` (`t3 v0.1.12`) and lists the current top-level commands.
+`T3.CLI.families/0` also retains the legacy `start` helper for backward
+compatibility. There is no automatic upgrade or mutation during discovery.
 
 Exile supplies native subprocess IO and lifecycle on Linux/macOS. A C compiler
 and make are required to build it. The SDK supports finite stdin and interactive

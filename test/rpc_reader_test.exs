@@ -92,16 +92,28 @@ defmodule T3.RPC.ReaderTest do
   end
 
   test "disconnect re-fetches credentials, catches up and re-subscribes", %{url: url} do
+    telemetry_id = {__MODULE__, self(), make_ref()}
+
+    :ok =
+      :telemetry.attach(
+        telemetry_id,
+        [:t3, :rpc, :reader, :status],
+        &T3.TelemetryTestHandler.handle/4,
+        self()
+      )
+
     reader = start_supervised!({T3.RPC.Reader, opts(url, self())})
     assert_receive :credential_requested, 1000
     assert_receive {:reader_socket, socket}, 1000
     assert_receive {:reader_event, {:snapshot, :shell, %{"threads" => []}}}, 1000
     assert_receive {:reader_event, {:status, :connected}}, 1000
+    assert_receive {:telemetry_event, [:t3, :rpc, :reader, :status], _, %{status: :connected}}
     assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
     assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
     refute inspect(:sys.get_status(reader)) =~ "private-reader-token"
     send(socket, :disconnect)
     assert_receive {:reader_event, {:status, :disconnected}}, 1000
+    assert_receive {:telemetry_event, [:t3, :rpc, :reader, :status], _, %{status: :reconnecting}}
     assert_receive :credential_requested, 1000
     assert_receive {:reader_socket, replacement}, 1000
     refute replacement == socket
@@ -109,6 +121,7 @@ defmodule T3.RPC.ReaderTest do
     assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
     assert_receive {:reader_wire, ^replacement, %{"_tag" => "Ack"}}, 1000
     assert T3.RPC.Reader.status(reader) == :connected
+    :telemetry.detach(telemetry_id)
   end
 
   test "ACK waits for consumption and completion re-subscribes", %{url: url} do

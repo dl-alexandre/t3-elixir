@@ -1,18 +1,14 @@
 {
   "source": "installed CLI --help",
-  "version": "t3 v0.1.1",
+  "version": "t3 v0.1.12",
   "commands": [
     {
       "name": "help",
       "description": "Show command help."
     },
     {
-      "name": "start",
-      "description": "Run the T3 Code server."
-    },
-    {
       "name": "serve",
-      "description": "Run the T3 Code server without opening a browser and print headless pairing details."
+      "description": "Run T3 Code in this terminal, with no browser."
     },
     {
       "name": "app",
@@ -27,6 +23,10 @@
       "description": "Manage the local auth control plane for headless deployments."
     },
     {
+      "name": "environment",
+      "description": "Link other T3 Code environments, so agents here can work there."
+    },
+    {
       "name": "browser",
       "description": "Manage T3's headless browser on this host."
     },
@@ -35,12 +35,36 @@
       "description": "Manage projects."
     },
     {
+      "name": "thread",
+      "description": "Start, message, and read threads on the running server."
+    },
+    {
+      "name": "feedback",
+      "description": "Send feedback about T3 Code to the T3 team. Needs Agent feedback set to Automatic in Settings > Labs; to approve a report first, ask your agent in a thread."
+    },
+    {
+      "name": "workflow",
+      "description": "Start, inspect and steer durable workflow runs on the running server."
+    },
+    {
+      "name": "up",
+      "description": "Set up remote access and the T3 Code background service."
+    },
+    {
+      "name": "status",
+      "description": "Show service setup and remote access settings."
+    },
+    {
       "name": "service",
       "description": "Manage the T3 Code background service."
     },
     {
       "name": "update",
       "description": "Download a newer t3 and switch this machine to it, including the background service when one is installed."
+    },
+    {
+      "name": "install",
+      "description": "Install this version as the `t3` command."
     },
     {
       "name": "uninstall",
@@ -59,12 +83,16 @@
       "description": "Inspect this T3 Code data directory and repair it. Pauses and restarts the background service as needed."
     },
     {
+      "name": "policy",
+      "description": "Inspect the administrator's managed policy."
+    },
+    {
       "name": "triage",
-      "description": "Investigate a T3 Code problem on this machine with claude or codex, and help file a good issue."
+      "description": "Investigate a T3 Code problem on this machine with Claude Code, Codex, or Antigravity, and help file a good issue."
     },
     {
       "name": "connect",
-      "description": "Set up T3 Connect for this machine."
+      "description": "Set up T3 Connect for this machine. Same as `t3 up --connect`."
     }
   ]
 }

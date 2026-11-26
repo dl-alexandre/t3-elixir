@@ -328,8 +328,8 @@ defmodule T3.RPCTest do
 
   test "catalog covers all pinned methods with generated helpers" do
     methods = RPC.Catalog.methods()
-    assert length(methods) == 211
-    assert Enum.count(methods, & &1["stream"]) == 27
+    assert length(methods) == 261
+    assert Enum.count(methods, & &1["stream"]) == 35
     assert {:ok, %{"stream" => true}} = RPC.Catalog.fetch("orchestration.subscribeShell")
     Code.ensure_loaded!(RPC.Methods)
     assert function_exported?(RPC.Methods, :server_get_config, 3)

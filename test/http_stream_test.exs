@@ -202,7 +202,8 @@ defmodule T3.HTTPStreamTest do
 
   test "raw catalog and device helper routes preserve original wire query", %{http: http} do
     routes = HTTP.raw_endpoints()
-    assert length(routes) == 45
+    assert length(routes) == 46
+    assert Enum.any?(routes, &(&1.id == :desktop_readiness_proof and &1.auth == :none))
     assert Enum.any?(routes, &(&1.id == :sim_mjpeg and &1.streaming))
     assert Enum.any?(routes, &(&1.id == :guest_stream and &1.auth == :guest_cookie))
 

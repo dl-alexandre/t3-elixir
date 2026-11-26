@@ -1,22 +1,24 @@
 defmodule T3.MixProject do
   use Mix.Project
 
+  @version "0.4.0"
+
   def project do
     [
       app: :t3,
-      version: "0.3.0",
+      version: @version,
       name: "T3",
       source_url: "https://github.com/dl-alexandre/t3-elixir",
       homepage_url: "https://github.com/dl-alexandre/t3-elixir",
-      elixir: "~> 1.20",
+      elixir: "~> 1.18",
       docs: [
         main: "readme",
+        source_ref: "v#{@version}",
         extras: [
           "README.md",
           "INTERFACES.md",
           "CHANGELOG.md",
           "LIVE_TESTING.md",
-          "RELEASE.md",
           "CONTRIBUTING.md",
           "docs/AUTHENTICATION.md",
           "docs/BOARD_READER.md",
@@ -28,9 +30,9 @@ defmodule T3.MixProject do
       description: "Elixir SDK for T3 Code MCP, HTTP, WebSocket RPC and CLI",
       package: [
         licenses: ["MIT"],
-        maintainers: ["dl-alexandre"],
         links: %{
           "GitHub" => "https://github.com/dl-alexandre/t3-elixir",
+          "Changelog" => "https://hexdocs.pm/t3/changelog.html",
           "T3 integration documentation" =>
             "https://github.com/pingdotgg/t3code/blob/main/docs/user/outside-agents.md"
         },
@@ -41,7 +43,8 @@ defmodule T3.MixProject do
       elixirc_paths: if(Mix.env() == :test, do: ["lib", "test/support"], else: ["lib"]),
       deps: [
         {:conduit_mcp, "~> 0.11.0"},
-        {:finch, "~> 0.24"},
+        {:finch, "~> 0.24 or ~> 0.25"},
+        {:telemetry, "~> 1.0"},
         {:mint_web_socket, "~> 1.0"},
         {:exile, "~> 0.15.0"},
         {:multipart, "~> 0.6.1"},

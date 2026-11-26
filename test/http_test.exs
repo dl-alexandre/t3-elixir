@@ -73,7 +73,7 @@ defmodule T3.HTTPTest do
   end
 
   test "catalog matches every contract route, including PUT webhooks", %{http: http} do
-    assert length(HTTP.endpoints()) == 38
+    assert length(HTTP.endpoints()) == 59
     contract = File.read!(Path.expand("../priv/t3/environmentHttp.ts", __DIR__))
 
     declared =
@@ -114,7 +114,9 @@ defmodule T3.HTTPTest do
           orchestration: HTTP.Orchestration,
           projects: HTTP.Projects,
           pull_requests: HTTP.PullRequests,
+          voice: HTTP.Voice,
           connect: HTTP.Connect,
+          peer_link: HTTP.PeerLink,
           webhooks: HTTP.Webhooks
         }[spec.group]
 
@@ -139,6 +141,22 @@ defmodule T3.HTTPTest do
     assert_receive {:http_request, "GET", _, _, headers, _}
     assert {"authorization", "Bearer private-token"} in headers
     assert {"x-t3-orchestration-protocol", "2"} in headers
+  end
+
+  test "HTTP telemetry reports outcomes without request headers or body", %{http: http} do
+    id = {__MODULE__, self(), make_ref()}
+    events = [[:t3, :http, :request, :start], [:t3, :http, :request, :stop]]
+    :ok = :telemetry.attach_many(id, events, &T3.TelemetryTestHandler.handle/4, self())
+
+    try do
+      assert {:ok, %HTTP.Response{status: 200}} = HTTP.request(http, :get, "/private-path")
+      assert_receive {:telemetry_event, [:t3, :http, :request, :start], _, %{method: :get}}
+
+      assert_receive {:telemetry_event, [:t3, :http, :request, :stop], _,
+                      %{method: :get, outcome: :ok}}
+    after
+      :telemetry.detach(id)
+    end
   end
 
   test "uses JSON or form per contract and sends exact upload bytes", %{http: http} do

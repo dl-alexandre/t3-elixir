@@ -66,7 +66,7 @@ defmodule T3.Client do
            protocol: client.protocol_version,
            request_timeout: client.timeout,
            max_reconnects: 0,
-           client_info: %{"name" => "t3", "version" => "0.1.0"}
+           client_info: %{"name" => "t3", "version" => application_version()}
          ) do
       {:ok, supervisor} ->
         case MCP.await_ready(name, client.timeout) do
@@ -159,4 +159,12 @@ defmodule T3.Client do
 
   defp disconnected,
     do: {:error, %Error{kind: :protocol, message: "call T3.Client.connect/1 first"}}
+
+  defp application_version do
+    case Application.spec(:t3, :vsn) do
+      version when is_binary(version) -> version
+      version when is_list(version) -> List.to_string(version)
+      _ -> "0.0.0"
+    end
+  end
 end

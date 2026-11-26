@@ -1,9 +1,45 @@
 {
   "upstream_repository": "https://github.com/pingdotgg/t3code",
-  "upstream_ref": "337c5858c33bc7f8f6dfd391a2c279fa0f7e4d17",
-  "inventory_date": "2026-11-05",
-  "notes": "Union of this session's 66 advertised tools and five additional tools found in upstream definitions. Availability must be discovered from the authenticated server.",
+  "upstream_ref": "d8a52dda31d8e2fe65b183cc97d1e4457d9c2396",
+  "inventory_date": "2026-11-26",
+  "notes": "Upstream MCP tool inventory at the pinned revision. Availability depends on authenticated context, permissions and server version.",
   "tools": [
+    {
+      "name": "ci_logs",
+      "description": "Read the tail of a PR's failing check logs, or one named check's.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "logs",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "ci_rerun",
+      "description": "Re-run a PR's failing checks, or one named check.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "rerun_checks",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "comment_on_issue",
+      "description": "Post a comment on an issue.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "comment",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    {
+      "name": "create_issue",
+      "description": "File an issue in a project's tracker.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "create",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
     {
       "name": "create_threads",
       "description": "Create new top-level threads in this checkout. Not delegation. One thread or its own worktree: `t3_thread_launch`. Project, branch, and worktree inherit.",
@@ -86,6 +122,15 @@
       "context": "Requires a compatible T3 agent/thread context and runtime; not generally exposed to outside OAuth clients."
     },
     {
+      "name": "link_issue",
+      "description": "Link an issue to a thread so T3 Code shows it beside the thread. Link every issue you work on or file.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "link",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    {
       "name": "link_pull_request",
       "description": "Link a PR to this thread. T3 shows its status and settles the thread on merge.",
       "advertised_in_session": true,
@@ -104,6 +149,15 @@
       "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     {
+      "name": "list_issues",
+      "description": "List issues in a project's tracker, newest updated first. Pass the returned nextCursors as cursors for the next page.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "list",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    {
       "name": "list_scheduled_tasks",
       "description": "List scheduled tasks. Omit `projectId` for this thread's project. Pass a `scheduledTaskId` to `schedule_task` or `delete_scheduled_task`. In a scheduled run, do not call this to find your task. Do the prompt.",
       "advertised_in_session": true,
@@ -111,6 +165,15 @@
       "module": "T3.Schedules",
       "function": "list",
       "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
+      "name": "list_thread_issues",
+      "description": "List the issues linked to a thread.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "list_for_thread",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     {
       "name": "list_thread_pull_requests",
@@ -239,6 +302,78 @@
       "context": "Requires a compatible T3 agent/thread context and runtime; not generally exposed to outside OAuth clients."
     },
     {
+      "name": "pull_request_create",
+      "description": "Push this thread's branch, then open its PR and link it, or return its open PR.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "create",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_list",
+      "description": "List PRs in this thread's repository, recently updated first.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "list_pull_requests",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_merge",
+      "description": "Merge a PR. Refuses if the head moved from expectedHeadSha (headSha in pull_request_read).",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "merge",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_read",
+      "description": "Read a PR's state and check counts. `include` adds detail.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "read_pull_request",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_respond",
+      "description": "Reply to, resolve, or reopen a review thread. Without reviewThreadId, comment on the PR.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "respond",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_review",
+      "description": "Submit a review: approve, request changes, or comment, with optional line comments. Approving needs expectedHeadSha (headSha in pull_request_read). Refuses if the head moved from it.",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "review",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "pull_request_update",
+      "description": "Edit a PR's title, body, labels, or reviewers, close or reopen it, or set ready (false: back to draft).",
+      "advertised_in_session": false,
+      "category": "pull_requests",
+      "module": "T3.PullRequests",
+      "function": "update",
+      "context": "Availability depends on server, permission and repository access; T3 agent tools may require an invocation context."
+    },
+    {
+      "name": "read_issue",
+      "description": "Read an issue: body, state, labels, assignees, recent comments and linked pull requests. Pass its url, or its key.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "read",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    {
       "name": "read_pull_request_guide",
       "description": "Read a PR's stored review guide and run state. `guide` is null when none exists. Never starts a run.",
       "advertised_in_session": true,
@@ -273,6 +408,15 @@
       "module": "T3.Schedules",
       "function": "save",
       "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
+      "name": "set_issue_state",
+      "description": "Move an issue to one of its states. read_issue lists them under states.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "set_state",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     {
       "name": "t3_attachment_discard",
@@ -345,6 +489,15 @@
       "module": "T3.Environments",
       "function": "unlink",
       "context": "Requires linked-environment support, which may be disabled or hidden by the server."
+    },
+    {
+      "name": "t3_feedback",
+      "description": "Send feedback to the T3 team: a T3 tool or `t3` command that misbehaved, a confusing instruction, a missing capability, or anything about T3 Code the user asks you to send. Not the user's own code. Use your own words; never quote the user's messages, code, files, or names. A report the user asks for opens a card where they approve it and choose whether to include the conversation of the `turns` you set, so call this when asked without asking first, and never paste the conversation into it.",
+      "advertised_in_session": false,
+      "category": "feedback",
+      "module": "T3.Feedback",
+      "function": "submit",
+      "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
     },
     {
       "name": "t3_pending_request",
@@ -435,6 +588,33 @@
       "module": "T3.Queues",
       "function": "manage",
       "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
+    },
+    {
+      "name": "t3_submit_output",
+      "description": "Return this turn's result as data, when the message asked for one. `json`: JSON text matching the schema it gave. A rejection says what did not fit; fix it and call again.",
+      "advertised_in_session": false,
+      "category": "threads",
+      "module": "T3.Threads",
+      "function": "submit_output",
+      "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
+      "name": "t3_theme_read",
+      "description": "Read T3 Code's own themes and the guide to restyle it: color roles and CSS selectors. Call before `t3_theme_set`.",
+      "advertised_in_session": false,
+      "category": "themes",
+      "module": "T3.Themes",
+      "function": "read",
+      "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
+      "name": "t3_theme_set",
+      "description": "Restyle T3 Code itself, only when the user asks. With `theme`, publish it as `themeId` (same id updates it) and switch this server's web app and this machine's desktop app to it, not remote desktop apps. Without `theme`, switch to a built-in or published `themeId`. `appearance` sets light, dark, or system mode. Live full-access or default caller thread only.",
+      "advertised_in_session": false,
+      "category": "themes",
+      "module": "T3.Themes",
+      "function": "set",
+      "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
     },
     {
       "name": "t3_thread_configure",
@@ -545,6 +725,15 @@
       "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     {
+      "name": "t3_workflow",
+      "description": "Durable workflow runs on this server. start: `workflow`, `input`, `idempotencyKey` (same key, same run). list: runs, by `status`, `tag` and `subject` (the web address or thread id a run is about). read: one run and its steps. questions: what runs ask a person, by `kind`. hooks: the URL paths that start runs. store: what workflows keep, under keys starting with `key`; store_set a `key` to `value`; store_delete. signal: wake a wait with `value`, addressed by `runId` and `wait`, or by `workflow` and `channel`; answers a question as `{choice, reason?}`. withdraw: end the question `wait` of `runId` unanswered, with an optional `reason`; its run goes on as if the question timed out. resume: run a paused run's failed step again. cancel.",
+      "advertised_in_session": false,
+      "category": "workflows",
+      "module": "T3.Workflows",
+      "function": "manage",
+      "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
       "name": "t3_workflow_stop",
       "description": "Stop a running Claude workflow in a thread. `subagentId`: coordinator from `t3_thread_read` 'activity'. Stops only the workflow, not the thread.",
       "advertised_in_session": true,
@@ -597,6 +786,15 @@
       "module": "T3.Tasks",
       "function": "status",
       "context": "Some operations require a T3-launched agent/thread context. The server enforces tool visibility and permissions."
+    },
+    {
+      "name": "unlink_issue",
+      "description": "Remove an issue link from a thread. The issue itself is not changed.",
+      "advertised_in_session": false,
+      "category": "issues",
+      "module": "T3.Issues",
+      "function": "unlink",
+      "context": "Availability is server-, permission-, and context-dependent; outside clients must supply explicit project/thread targets when required."
     },
     {
       "name": "unlink_pull_request",

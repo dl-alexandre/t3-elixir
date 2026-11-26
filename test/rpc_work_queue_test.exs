@@ -1,6 +1,17 @@
 defmodule T3.RPC.WorkQueueTest do
   use ExUnit.Case, async: true
 
+  defmodule NamedOwner do
+    use GenServer
+    def start_link(opts), do: GenServer.start_link(__MODULE__, opts, name: opts[:name])
+    def init(opts), do: {:ok, opts[:test_owner]}
+
+    def handle_info(message, owner) do
+      send(owner, {:named_owner_message, self(), message})
+      {:noreply, owner}
+    end
+  end
+
   test "capacity includes active work, preserves admission order and hides queued data" do
     owner = self()
 
@@ -60,6 +71,15 @@ defmodule T3.RPC.WorkQueueTest do
 
   test "failed return notifies owner and shutdown kills an active worker" do
     owner = self()
+    telemetry_id = {__MODULE__, self(), make_ref()}
+
+    :ok =
+      :telemetry.attach(
+        telemetry_id,
+        [:t3, :rpc, :work_queue, :failure],
+        &T3.TelemetryTestHandler.handle/4,
+        self()
+      )
 
     queue =
       start_supervised!(
@@ -80,10 +100,49 @@ defmodule T3.RPC.WorkQueueTest do
 
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :fail)
     assert_receive {:t3_work_queue, ^queue, {:failed, :fail}}, 1000
+    assert_receive {:telemetry_event, [:t3, :rpc, :work_queue, :failure], %{count: 1}, %{}}
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :block)
     assert_receive {:worker, worker}, 1000
     monitor = Process.monitor(worker)
     stop_supervised!(T3.RPC.WorkQueue)
     assert_receive {:DOWN, ^monitor, :process, ^worker, _}, 1000
+    :telemetry.detach(telemetry_id)
+  end
+
+  test "a restarted registered owner receives failures" do
+    name = Module.concat(__MODULE__, "Owner#{System.unique_integer([:positive])}")
+    owner = self()
+    child = {NamedOwner, name: name, test_owner: owner}
+    {:ok, supervisor} = Supervisor.start_link([child], strategy: :one_for_one)
+    first = Process.whereis(name)
+    monitor = Process.monitor(first)
+    Process.exit(first, :kill)
+    assert_receive {:DOWN, ^monitor, :process, ^first, :killed}, 1000
+    assert eventually(fn -> is_pid(Process.whereis(name)) and Process.whereis(name) != first end)
+
+    queue =
+      start_supervised!({T3.RPC.WorkQueue, owner: name, work: fn _ -> {:error, :failed} end})
+
+    assert :ok = T3.RPC.WorkQueue.enqueue(queue, :private_event)
+
+    assert_receive {:named_owner_message, new_owner,
+                    {:t3_work_queue, ^queue, {:failed, :private_event}}},
+                   1000
+
+    assert new_owner == Process.whereis(name)
+    Supervisor.stop(supervisor)
+  end
+
+  defp eventually(fun, attempts \\ 50)
+  defp eventually(fun, 0), do: fun.()
+
+  defp eventually(fun, attempts) do
+    if fun.(),
+      do: true,
+      else:
+        (
+          Process.sleep(10)
+          eventually(fun, attempts - 1)
+        )
   end
 end

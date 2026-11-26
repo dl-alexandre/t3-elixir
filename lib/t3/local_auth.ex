@@ -51,6 +51,7 @@ defmodule T3.LocalAuth do
   end
 
   @doc "Start a supervised credential provider. Requires a localhost :base_url."
+  @spec start_link(keyword()) :: GenServer.on_start() | {:error, Error.t()}
   def start_link(opts) do
     {gen_opts, opts} = Keyword.split(opts, [:name])
 
@@ -60,12 +61,16 @@ defmodule T3.LocalAuth do
   end
 
   @doc "Get fresh RPC connection options, reusing or renewing the owned session."
+  @spec connection_options(GenServer.server()) :: {:ok, keyword()} | {:error, Error.t()}
   def connection_options(server), do: GenServer.call(server, :connection_options, :infinity)
 
   @doc "Discard and revoke a cached session, for example after explicit server revocation."
+  @spec invalidate(GenServer.server()) :: :ok
   def invalidate(server), do: GenServer.call(server, :invalidate, :infinity)
 
   @doc "Issue one scoped native session through the local CLI; caller owns revocation."
+  @spec issue() :: {:ok, Credential.t()} | {:error, Error.t()}
+  @spec issue(keyword()) :: {:ok, Credential.t()} | {:error, Error.t()}
   def issue(opts \\ []) do
     with :ok <- validate_issue_options(opts),
          {:ok, result} <- CLI.run(cli(opts), issue_arguments(opts)),
@@ -78,6 +83,8 @@ defmodule T3.LocalAuth do
   end
 
   @doc "Revoke a credential issued by the same local T3 data directory."
+  @spec revoke(Credential.t()) :: :ok | {:error, Error.t()}
+  @spec revoke(Credential.t(), keyword()) :: :ok | {:error, Error.t()}
   def revoke(%Credential{session_id: id}, opts \\ []) do
     case CLI.run(cli(opts), ["auth", "session", "revoke", id] ++ base_arguments(opts)) do
       {:ok, _} -> :ok

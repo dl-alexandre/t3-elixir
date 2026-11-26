@@ -22,12 +22,16 @@ defmodule T3.RPC.WorkQueue do
   """
   use GenServer
 
+  @type server :: GenServer.server()
+
+  @spec start_link(keyword()) :: GenServer.on_start()
   def start_link(opts) do
     {server_opts, opts} = Keyword.split(opts, [:name])
     GenServer.start_link(__MODULE__, opts, server_opts)
   end
 
   @doc "Admit work without waiting for execution, or return `{:error, :busy}`."
+  @spec enqueue(server(), term()) :: :ok | {:error, :busy}
   def enqueue(server, event), do: GenServer.call(server, {:enqueue, event})
 
   @impl true
@@ -37,14 +41,10 @@ defmodule T3.RPC.WorkQueue do
     capacity = Keyword.get(opts, :capacity, 32)
     timeout = Keyword.get(opts, :work_timeout, 30_000)
 
-    owner =
-      case Keyword.fetch!(opts, :owner) do
-        name when is_atom(name) -> Process.whereis(name)
-        pid -> pid
-      end
+    owner = Keyword.fetch!(opts, :owner)
 
     if is_function(work, 1) and is_integer(capacity) and capacity > 0 and
-         is_integer(timeout) and timeout > 0 and is_pid(owner) do
+         is_integer(timeout) and timeout > 0 and valid_owner?(owner) do
       {:ok,
        %{
          work: work,
@@ -107,8 +107,23 @@ defmodule T3.RPC.WorkQueue do
   defp start_next(state), do: state
   defp finish(state), do: start_next(%{state | active: nil, size: state.size - 1})
 
-  defp notify_failure(state, event),
-    do: send(state.owner, {:t3_work_queue, self(), {:failed, event}})
+  defp notify_failure(state, event) do
+    case resolve_owner(state.owner) do
+      pid when is_pid(pid) ->
+        send(pid, {:t3_work_queue, self(), {:failed, event}})
+        :telemetry.execute([:t3, :rpc, :work_queue, :failure], %{count: 1}, %{})
+
+      nil ->
+        :telemetry.execute([:t3, :rpc, :work_queue, :failure], %{count: 1}, %{})
+    end
+  end
+
+  defp valid_owner?(owner) when is_pid(owner), do: true
+  defp valid_owner?(owner) when is_atom(owner), do: not is_nil(owner)
+  defp valid_owner?(_), do: false
+
+  defp resolve_owner(owner) when is_pid(owner), do: owner
+  defp resolve_owner(owner) when is_atom(owner), do: Process.whereis(owner)
 
   @impl true
   def terminate(_, %{active: %{pid: pid}}), do: Process.exit(pid, :kill)

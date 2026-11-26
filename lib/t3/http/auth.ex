@@ -32,4 +32,12 @@ defmodule T3.HTTP.Auth do
   @doc "POST `/api/auth/clients/revoke-others`. Body encoding: none."
   def revoke_other_clients(client, opts \\ []),
     do: T3.HTTP.call(client, :auth_revoke_other_clients, opts)
+
+  @doc "POST `/api/auth/connect-devices/approve`. Body encoding: json."
+  def approve_connect_device(client, opts \\ []),
+    do: T3.HTTP.call(client, :auth_approve_connect_device, opts)
+
+  @doc "POST `/api/auth/connect-devices/revoke`. Body encoding: json."
+  def revoke_connect_device(client, opts \\ []),
+    do: T3.HTTP.call(client, :auth_revoke_connect_device, opts)
 end

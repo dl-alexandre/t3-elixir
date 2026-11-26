@@ -53,15 +53,18 @@ defmodule T3.RPC.Reader do
   use GenServer
   alias T3.RPC
 
+  @spec start_link(keyword()) :: GenServer.on_start()
   def start_link(opts) do
     {server_opts, opts} = Keyword.split(opts, [:name])
     GenServer.start_link(__MODULE__, opts, server_opts)
   end
 
   @doc "Return `:connected` or `:disconnected` without exposing connection credentials."
+  @spec status(GenServer.server()) :: :connected | :disconnected
   def status(server), do: GenServer.call(server, :status)
 
   @doc "Return committed per-stream sequence cursors (only for resume-enabled streams)."
+  @spec cursors(GenServer.server()) :: map()
   def cursors(server), do: GenServer.call(server, :cursors)
 
   @impl true
@@ -136,6 +139,7 @@ defmodule T3.RPC.Reader do
               {:ok, state} ->
                 schedule_health(state)
                 :ok = state.callback.({:status, :connected})
+                telemetry_status(:connected)
                 {:noreply, state}
 
               {:error, reason} ->
@@ -223,6 +227,7 @@ defmodule T3.RPC.Reader do
     # Its request IDs may be reused by the next connection.
     flush_old_messages()
     :ok = state.callback.({:status, :disconnected})
+    telemetry_status(:reconnecting)
     spread = round(state.delay * state.jitter)
     delay = state.delay + if(spread > 0, do: :rand.uniform(spread + 1) - 1, else: 0)
     delay = min(delay, state.max)
@@ -346,6 +351,9 @@ defmodule T3.RPC.Reader do
   defp valid_health?(nil), do: true
   defp valid_health?({method, payload}), do: is_binary(method) and is_map(payload)
   defp valid_health?(_), do: false
+
+  defp telemetry_status(status),
+    do: :telemetry.execute([:t3, :rpc, :reader, :status], %{count: 1}, %{status: status})
 
   defp schedule_health(%{health: nil}), do: :ok
 

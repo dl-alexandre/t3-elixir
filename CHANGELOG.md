@@ -1,6 +1,22 @@
 # Changelog
 
-## 0.3.0 — unreleased
+## 0.4.0 — 2026-11-26
+
+- Sync the upstream contract to `d8a52dda31d8e2fe65b183cc97d1e4457d9c2396`:
+  93 MCP tools, 59 HTTP routes, 261 RPC methods (35 streams), 46 raw HTTP routes,
+  and the `t3 v0.1.12` CLI inventory. Add issue, feedback, theme and workflow
+  MCP modules plus HTTP voice and peer-link helpers.
+- Add dynamic MCP client version metadata and resilient named `:owner` handling
+  in `T3.RPC.WorkQueue`.
+- Fall back to `T3CODE_CLI_PATH` when selecting the `T3.CLI` executable.
+- Make `T3.Application` supervision children configurable, including Finch and
+  OAuth store options.
+- Add `:telemetry` instrumentation and expand `@spec` coverage.
+- Update CI compatibility for Elixir `~> 1.18` and Finch 0.25, retaining Finch
+  0.24 support.
+- Set the HexDocs `source_ref` and add a Changelog link.
+
+## 0.3.0 — 2026-11-05
 
 - Add opt-in stream resume checkpoints using supported `afterSequence` inputs,
   with load/save hooks and cursor helpers that ignore enrichment high-waters.
