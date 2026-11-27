@@ -28,10 +28,10 @@ The API reference is available on [HexDocs](https://hexdocs.pm/t3).
 Add the Hex dependency:
 
 ```elixir
-{:t3, "~> 0.4.0"}
+{:t3, "~> 0.4.1"}
 ```
 
-For a Git checkout, use `{:t3, github: "dl-alexandre/t3-elixir", tag: "v0.4.0"}`.
+For a Git checkout, use `{:t3, github: "dl-alexandre/t3-elixir", tag: "v0.4.1"}`.
 Local development can use `{:t3, path: "/path/to/t3-elixir"}`.
 
 Dependencies handle the hard parts: ConduitMCP for MCP/OAuth, Finch for HTTP,

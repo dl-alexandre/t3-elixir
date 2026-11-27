@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 — 2026-11-27
+
+- Stabilize the test suite on hosted CI runners by raising the default
+  `assert_receive` timeout to 5 seconds; this fixes intermittent macOS failures
+  seen on the 0.4.0 tag build. No library behaviour changes.
+
 ## 0.4.0 — 2026-11-26
 
 - Sync the upstream contract to `d8a52dda31d8e2fe65b183cc97d1e4457d9c2396`:

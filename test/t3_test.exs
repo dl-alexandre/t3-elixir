@@ -137,7 +137,7 @@ defmodule T3Test do
       end)
       |> Enum.find(&(&1["method"] == "initialize"))
 
-    assert request["params"]["clientInfo"]["version"] == "0.4.0"
+    assert request["params"]["clientInfo"]["version"] == "0.4.1"
   end
 
   defp collect_requests(acc) do
