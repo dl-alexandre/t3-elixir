@@ -284,7 +284,7 @@ defmodule T3.RPCTest do
     end)
 
     {:ok, pid} = RPC.start_link(url: "ws://127.0.0.1:#{port}/ws", owner: self())
-    assert_receive {:t3_rpc_request, ^pid, "early", "hello", %{}}, 1000
+    assert_receive {:t3_rpc_request, ^pid, "early", "hello", %{}}
     assert :ok = RPC.close(pid)
     send(server, :done)
   end
@@ -323,7 +323,7 @@ defmodule T3.RPCTest do
 
     {:ok, pid} = RPC.start_link(url: "ws://127.0.0.1:#{port}/ws", max_message_bytes: 4)
     monitor = Process.monitor(pid)
-    assert_receive {:DOWN, ^monitor, :process, ^pid, _}, 1000
+    assert_receive {:DOWN, ^monitor, :process, ^pid, _}
   end
 
   test "catalog covers all pinned methods with generated helpers" do

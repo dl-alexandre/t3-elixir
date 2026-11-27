@@ -112,15 +112,15 @@ defmodule T3.CLITest do
 
     {:ok, runner} = CLI.stream(cli, ["stdin"])
     assert :ok = CLI.write(runner, "interactive")
-    assert_receive {:t3_cli, ^runner, {:data, "interactive"}}, 1000
+    assert_receive {:t3_cli, ^runner, {:data, "interactive"}}
     assert :ok = CLI.close_stdin(runner)
-    assert_receive {:t3_cli, ^runner, {:exit, %{exit_status: 0, output: "interactive"}}}, 1000
+    assert_receive {:t3_cli, ^runner, {:exit, %{exit_status: 0, output: "interactive"}}}
   end
 
   test "timeout and cancellation terminate the actual executable", %{cli: cli} do
     {:ok, runner} = CLI.stream(%{cli | timeout: 200}, ["wait"])
     {:ok, os_pid} = CLI.os_pid(runner)
-    assert_receive {:t3_cli, ^runner, {:error, %{code: :timeout}}}, 1000
+    assert_receive {:t3_cli, ^runner, {:error, %{code: :timeout}}}
     assert_dead(os_pid)
     {:ok, runner} = CLI.stream(cli, ["wait"])
     {:ok, os_pid} = CLI.os_pid(runner)
@@ -143,12 +143,12 @@ defmodule T3.CLITest do
         end
       end)
 
-    assert_receive {:os_pid, os_pid}, 1000
+    assert_receive {:os_pid, os_pid}
     Process.exit(owner, :kill)
     assert_dead(os_pid)
   end
 
-  defp assert_dead(os_pid, attempts \\ 50) do
+  defp assert_dead(os_pid, attempts \\ 200) do
     {_output, status} =
       System.cmd("/bin/kill", ["-0", Integer.to_string(os_pid)], stderr_to_stdout: true)
 
@@ -167,8 +167,8 @@ defmodule T3.CLITest do
 
   test "stream events and cancellation", %{cli: cli} do
     assert {:ok, runner} = CLI.stream(cli, ["hello"])
-    assert_receive {:t3_cli, ^runner, {:data, "hello\n"}}, 1000
-    assert_receive {:t3_cli, ^runner, {:exit, %{exit_status: 0}}}, 1000
+    assert_receive {:t3_cli, ^runner, {:data, "hello\n"}}
+    assert_receive {:t3_cli, ^runner, {:exit, %{exit_status: 0}}}
     assert {:ok, runner} = CLI.stream(cli, ["wait"])
     assert :ok = CLI.cancel(runner)
     assert_receive {:t3_cli, ^runner, {:error, %{code: :cancelled}}}

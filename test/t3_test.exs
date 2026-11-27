@@ -35,7 +35,7 @@ defmodule T3Test do
 
       assert_receive {:request, "POST", _, headers, _}
       assert {"authorization", "Bearer fixture-token"} in headers
-      assert_receive {:request, "POST", _, _, "{\"jsonrpc\"" <> _}, 1000
+      assert_receive {:request, "POST", _, _, "{\"jsonrpc\"" <> _}
       assert Client.close(client) == :ok
       assert Client.close(client) == :ok
     end
@@ -132,7 +132,7 @@ defmodule T3Test do
 
     request =
       Stream.repeatedly(fn ->
-        assert_receive {:request, "POST", _, _, body}, 1000
+        assert_receive {:request, "POST", _, _, body}
         JSON.decode!(body)
       end)
       |> Enum.find(&(&1["method"] == "initialize"))

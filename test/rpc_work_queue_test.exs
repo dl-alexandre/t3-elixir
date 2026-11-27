@@ -30,15 +30,15 @@ defmodule T3.RPC.WorkQueueTest do
       )
 
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, "private-event-a")
-    assert_receive {:started, first, "private-event-a"}, 1000
+    assert_receive {:started, first, "private-event-a"}
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :second)
     assert {:error, :busy} = T3.RPC.WorkQueue.enqueue(queue, :third)
     refute inspect(:sys.get_status(queue)) =~ "private-event-a"
     send(first, :finish)
-    assert_receive {:started, second, :second}, 1000
+    assert_receive {:started, second, :second}
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :third)
     send(second, :finish)
-    assert_receive {:started, third, :third}, 1000
+    assert_receive {:started, third, :third}
     send(third, :finish)
   end
 
@@ -65,8 +65,8 @@ defmodule T3.RPC.WorkQueueTest do
 
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :stall)
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :next)
-    assert_receive {:t3_work_queue, ^queue, {:failed, :stall}}, 1000
-    assert_receive :next_processed, 1000
+    assert_receive {:t3_work_queue, ^queue, {:failed, :stall}}
+    assert_receive :next_processed
   end
 
   test "failed return notifies owner and shutdown kills an active worker" do
@@ -99,13 +99,13 @@ defmodule T3.RPC.WorkQueueTest do
       )
 
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :fail)
-    assert_receive {:t3_work_queue, ^queue, {:failed, :fail}}, 1000
+    assert_receive {:t3_work_queue, ^queue, {:failed, :fail}}
     assert_receive {:telemetry_event, [:t3, :rpc, :work_queue, :failure], %{count: 1}, %{}}
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :block)
-    assert_receive {:worker, worker}, 1000
+    assert_receive {:worker, worker}
     monitor = Process.monitor(worker)
     stop_supervised!(T3.RPC.WorkQueue)
-    assert_receive {:DOWN, ^monitor, :process, ^worker, _}, 1000
+    assert_receive {:DOWN, ^monitor, :process, ^worker, _}
     :telemetry.detach(telemetry_id)
   end
 
@@ -117,7 +117,7 @@ defmodule T3.RPC.WorkQueueTest do
     first = Process.whereis(name)
     monitor = Process.monitor(first)
     Process.exit(first, :kill)
-    assert_receive {:DOWN, ^monitor, :process, ^first, :killed}, 1000
+    assert_receive {:DOWN, ^monitor, :process, ^first, :killed}
     assert eventually(fn -> is_pid(Process.whereis(name)) and Process.whereis(name) != first end)
 
     queue =
@@ -126,14 +126,13 @@ defmodule T3.RPC.WorkQueueTest do
     assert :ok = T3.RPC.WorkQueue.enqueue(queue, :private_event)
 
     assert_receive {:named_owner_message, new_owner,
-                    {:t3_work_queue, ^queue, {:failed, :private_event}}},
-                   1000
+                    {:t3_work_queue, ^queue, {:failed, :private_event}}}
 
     assert new_owner == Process.whereis(name)
     Supervisor.stop(supervisor)
   end
 
-  defp eventually(fun, attempts \\ 50)
+  defp eventually(fun, attempts \\ 200)
   defp eventually(fun, 0), do: fun.()
 
   defp eventually(fun, attempts) do

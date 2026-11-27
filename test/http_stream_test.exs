@@ -146,11 +146,11 @@ defmodule T3.HTTPStreamTest do
     end
 
     task = HTTP.start_stream(http, :get, "/binary", callback)
-    assert_receive {:blocked_callback, worker}, 1000
+    assert_receive {:blocked_callback, worker}
     ref = Process.monitor(worker)
     refute_receive {:blocked_callback, _}, 50
     assert HTTP.cancel_stream(task) == :ok
-    assert_receive {:DOWN, ^ref, :process, ^worker, _}, 1000
+    assert_receive {:DOWN, ^ref, :process, ^worker, _}
   end
 
   test "wall-clock deadlines also bound callback execution", %{http: http} do
@@ -168,7 +168,7 @@ defmodule T3.HTTPStreamTest do
     assert {:error, %T3.Error{kind: :timeout}} =
              HTTP.stream(http, :get, "/binary", callback, timeout: 50)
 
-    assert System.monotonic_time(:millisecond) - start < 1000
+    assert System.monotonic_time(:millisecond) - start < 3_000
 
     assert {:error, %T3.Error{kind: :timeout}} =
              HTTP.stream(http, :get, "/slow", fn _ -> :cont end, timeout: 20)

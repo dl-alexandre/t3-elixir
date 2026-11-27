@@ -28,8 +28,6 @@ end
 
 defmodule T3.WebSocketTest do
   use ExUnit.Case, async: true
-  # Network delivery is asynchronous; use a portable deadline rather than the
-  # 100ms default, which is below observed hosted-runner scheduling latency.
   alias T3.{WebSocket, Error}
 
   setup do
@@ -59,10 +57,10 @@ defmodule T3.WebSocketTest do
   } do
     socket = socket(base, max_pending_frames: 1)
     assert :ok = WebSocket.send_text(socket, "literal text")
-    assert_receive {:t3_web_socket, ^socket, first, {:text, "literal text"}}, 1000
+    assert_receive {:t3_web_socket, ^socket, first, {:text, "literal text"}}
     assert :ok = WebSocket.ack(socket, first)
     assert :ok = WebSocket.send_binary(socket, <<0, 255, 10, 20>>)
-    assert_receive {:t3_web_socket, ^socket, second, {:binary, <<0, 255, 10, 20>>}}, 1000
+    assert_receive {:t3_web_socket, ^socket, second, {:binary, <<0, 255, 10, 20>>}}
     assert :ok = WebSocket.ack(socket, second)
     assert {:error, %Error{kind: :protocol}} = WebSocket.ack(socket, second)
     assert :ok = WebSocket.close(socket)
@@ -101,7 +99,7 @@ defmodule T3.WebSocketTest do
 
   test "idle/lifetime deadlines close and owner death cleans up", %{base: base} do
     socket = socket(base, idle_timeout: 20)
-    assert_receive {:t3_web_socket, ^socket, {:error, %Error{kind: :timeout}}}, 1000
+    assert_receive {:t3_web_socket, ^socket, {:error, %Error{kind: :timeout}}}
     parent = self()
 
     owner =
@@ -114,7 +112,7 @@ defmodule T3.WebSocketTest do
     socket = socket(base, owner: owner, idle_timeout: :infinity, lifetime: :infinity)
     monitor = Process.monitor(socket)
     send(owner, :finish)
-    assert_receive {:DOWN, ^monitor, :process, ^socket, :normal}, 1000
+    assert_receive {:DOWN, ^monitor, :process, ^socket, :normal}
     assert is_pid(parent)
   end
 
@@ -209,7 +207,7 @@ defmodule T3.WebSocketTest do
     assert {:ok, socket} =
              WebSocket.start_link(url: "ws://127.0.0.1:#{port}/raw", max_message_bytes: 4)
 
-    assert_receive {:t3_web_socket, ^socket, {:error, %Error{kind: :protocol}}}, 1000
+    assert_receive {:t3_web_socket, ^socket, {:error, %Error{kind: :protocol}}}
     assert_receive {:t3_web_socket, ^socket, {:closed, :error}}
     send(server, :done)
   end

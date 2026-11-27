@@ -139,7 +139,7 @@ defmodule T3.LocalAuthTest do
     assert {:ok, first} = LocalAuth.connection_options(auth)
     assert {:ok, ^first} = LocalAuth.connection_options(auth)
     assert :sys.get_state(auth).ticket.until <= System.system_time(:millisecond) + 30_000
-    assert_receive {:ticket_request, _, _}, 1000
+    assert_receive {:ticket_request, _, _}
     refute_receive {:ticket_request, _, _}, 20
     refute inspect(:sys.get_status(auth)) =~ first[:ticket]
     :sys.replace_state(auth, fn state -> put_in(state, [:ticket, :until], 0) end)
@@ -198,8 +198,8 @@ defmodule T3.LocalAuthTest do
     assert {:ok, _} = LocalAuth.connection_options(auth)
     assert {:ok, _} = LocalAuth.connection_options(auth)
     assert :sys.get_state(auth).ticket == nil
-    assert_receive {:ticket_request, _, _}, 1000
-    assert_receive {:ticket_request, _, _}, 1000
+    assert_receive {:ticket_request, _, _}
+    assert_receive {:ticket_request, _, _}
   end
 
   test "remote LocalAuth error points callers to environment-token authentication", %{

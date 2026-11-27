@@ -103,23 +103,23 @@ defmodule T3.RPC.ReaderTest do
       )
 
     reader = start_supervised!({T3.RPC.Reader, opts(url, self())})
-    assert_receive :credential_requested, 1000
-    assert_receive {:reader_socket, socket}, 1000
-    assert_receive {:reader_event, {:snapshot, :shell, %{"threads" => []}}}, 1000
-    assert_receive {:reader_event, {:status, :connected}}, 1000
+    assert_receive :credential_requested
+    assert_receive {:reader_socket, socket}
+    assert_receive {:reader_event, {:snapshot, :shell, %{"threads" => []}}}
+    assert_receive {:reader_event, {:status, :connected}}
     assert_receive {:telemetry_event, [:t3, :rpc, :reader, :status], _, %{status: :connected}}
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
-    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}
     refute inspect(:sys.get_status(reader)) =~ "private-reader-token"
     send(socket, :disconnect)
-    assert_receive {:reader_event, {:status, :disconnected}}, 1000
+    assert_receive {:reader_event, {:status, :disconnected}}
     assert_receive {:telemetry_event, [:t3, :rpc, :reader, :status], _, %{status: :reconnecting}}
-    assert_receive :credential_requested, 1000
-    assert_receive {:reader_socket, replacement}, 1000
+    assert_receive :credential_requested
+    assert_receive {:reader_socket, replacement}
     refute replacement == socket
-    assert_receive {:reader_event, {:snapshot, :shell, %{"threads" => []}}}, 1000
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
-    assert_receive {:reader_wire, ^replacement, %{"_tag" => "Ack"}}, 1000
+    assert_receive {:reader_event, {:snapshot, :shell, %{"threads" => []}}}
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
+    assert_receive {:reader_wire, ^replacement, %{"_tag" => "Ack"}}
     assert T3.RPC.Reader.status(reader) == :connected
     :telemetry.detach(telemetry_id)
   end
@@ -141,18 +141,18 @@ defmodule T3.RPC.ReaderTest do
     end
 
     start_supervised!({T3.RPC.Reader, opts(url, owner, callback)})
-    assert_receive {:reader_socket, socket}, 1000
-    assert_receive {:reader_wire, ^socket, %{"tag" => "watch", "id" => id}}, 1000
-    assert_receive {:consume, reader, _}, 1000
+    assert_receive {:reader_socket, socket}
+    assert_receive {:reader_wire, ^socket, %{"tag" => "watch", "id" => id}}
+    assert_receive {:consume, reader, _}
     refute_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 30
     send(reader, :consumed)
-    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack", "requestId" => ^id}}, 1000
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack", "requestId" => ^id}}
     send(socket, {:finish, id})
-    assert_receive {:reader_event, {:status, :disconnected}}, 1000
-    assert_receive {:reader_socket, replacement}, 1000
-    assert_receive {:consume, ^reader, _}, 1000
+    assert_receive {:reader_event, {:status, :disconnected}}
+    assert_receive {:reader_socket, replacement}
+    assert_receive {:consume, ^reader, _}
     send(reader, :consumed)
-    assert_receive {:reader_wire, ^replacement, %{"_tag" => "Ack"}}, 1000
+    assert_receive {:reader_wire, ^replacement, %{"_tag" => "Ack"}}
   end
 
   test "failed credential provider retries without dying", %{url: url} do
@@ -166,10 +166,10 @@ defmodule T3.RPC.ReaderTest do
     end
 
     start_supervised!({T3.RPC.Reader, Keyword.put(opts(url, owner), :connect, connect)})
-    assert_receive {:attempt, 0}, 1000
-    assert_receive {:attempt, 1}, 1000
-    assert_receive {:attempt, 2}, 1000
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
+    assert_receive {:attempt, 0}
+    assert_receive {:attempt, 1}
+    assert_receive {:attempt, 2}
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
   end
 
   test "a stalled health read reconnects an otherwise open socket", %{url: url} do
@@ -178,13 +178,13 @@ defmodule T3.RPC.ReaderTest do
         [health_check: {"silent-health", %{}}, health_interval: 20, health_timeout: 20]
 
     start_supervised!({T3.RPC.Reader, options})
-    assert_receive {:reader_socket, socket}, 1000
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
-    assert_receive {:reader_wire, ^socket, %{"tag" => "silent-health"}}, 1000
-    assert_receive {:reader_event, {:status, :disconnected}}, 1000
-    assert_receive {:reader_socket, replacement}, 1000
+    assert_receive {:reader_socket, socket}
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
+    assert_receive {:reader_wire, ^socket, %{"tag" => "silent-health"}}
+    assert_receive {:reader_event, {:status, :disconnected}}
+    assert_receive {:reader_socket, replacement}
     refute replacement == socket
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
   end
 
   test "commits consumed cursors and resumes without advancing on failed admission", %{url: url} do
@@ -219,11 +219,10 @@ defmodule T3.RPC.ReaderTest do
       end)
 
     reader = start_supervised!({T3.RPC.Reader, options})
-    assert_receive {:reader_socket, socket}, 1000
+    assert_receive {:reader_socket, socket}
 
     assert_receive {:reader_wire, ^socket,
-                    %{"tag" => "orchestration.subscribeShell", "payload" => payload}},
-                   1000
+                    %{"tag" => "orchestration.subscribeShell", "payload" => payload}}
 
     assert payload == %{
              "afterSequence" => 7,
@@ -231,23 +230,22 @@ defmodule T3.RPC.ReaderTest do
              "omitOlderSettled" => false
            }
 
-    assert_receive {:consuming, ^reader}, 1000
+    assert_receive {:consuming, ^reader}
     refute_receive {:saved, _, _}, 20
     send(reader, :consumed)
-    assert_receive {:saved, :shell, 12}, 1000
-    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
+    assert_receive {:saved, :shell, 12}
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}
     assert T3.RPC.Reader.cursors(reader) == %{shell: 12}
     send(socket, :disconnect)
-    assert_receive {:reader_socket, replacement}, 1000
+    assert_receive {:reader_socket, replacement}
 
     assert_receive {:reader_wire, ^replacement,
                     %{
                       "tag" => "orchestration.subscribeShell",
                       "payload" => %{"afterSequence" => 12}
-                    }},
-                   1000
+                    }}
 
-    assert_receive {:consuming, ^reader}, 1000
+    assert_receive {:consuming, ^reader}
     send(reader, :consumed)
   end
 
@@ -269,7 +267,7 @@ defmodule T3.RPC.ReaderTest do
       )
 
     :ok = T3.RPC.WorkQueue.enqueue(queue, :preexisting)
-    assert_receive {:working, first, :preexisting}, 1000
+    assert_receive {:working, first, :preexisting}
 
     callback = fn
       {:chunk, _, _} = event ->
@@ -282,22 +280,22 @@ defmodule T3.RPC.ReaderTest do
 
     options = opts(url, owner, callback) |> Keyword.put(:consumer_retry_interval, 10)
     reader = start_supervised!({T3.RPC.Reader, options})
-    assert_receive {:reader_socket, socket}, 1000
-    assert_receive :admission_attempt, 1000
+    assert_receive {:reader_socket, socket}
+    assert_receive :admission_attempt
     assert T3.RPC.Reader.status(reader) == :connected
     refute_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 20
     send(first, :finish)
-    assert_receive {:working, second, {:chunk, :shell, [_]}}, 1000
-    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}, 1000
+    assert_receive {:working, second, {:chunk, :shell, [_]}}
+    assert_receive {:reader_wire, ^socket, %{"_tag" => "Ack"}}
     send(second, :finish)
   end
 
   test "supervisor shutdown closes the owned socket", %{url: url} do
     start_supervised!({T3.RPC.Reader, opts(url, self())})
-    assert_receive {:reader_socket, socket}, 1000
-    assert_receive {:reader_event, {:chunk, :shell, [_]}}, 1000
+    assert_receive {:reader_socket, socket}
+    assert_receive {:reader_event, {:chunk, :shell, [_]}}
     monitor = Process.monitor(socket)
     stop_supervised!(T3.RPC.Reader)
-    assert_receive {:DOWN, ^monitor, :process, ^socket, _}, 1000
+    assert_receive {:DOWN, ^monitor, :process, ^socket, _}
   end
 end
